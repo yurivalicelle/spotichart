@@ -18,10 +18,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Copy only requirements first to leverage Docker cache
-COPY pyproject.toml /tmp/
+# Copy project files for installation
+WORKDIR /build
+COPY pyproject.toml .
+COPY src/ ./src/
 RUN pip install --upgrade pip setuptools wheel && \
-    pip install /tmp/
+    pip install .
 
 # Production stage
 FROM python:3.11-slim
