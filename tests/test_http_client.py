@@ -2,9 +2,10 @@
 Tests for HTTP Client
 """
 
+from unittest.mock import Mock, patch
+
 import pytest
 import requests
-from unittest.mock import Mock, patch
 
 from spotichart.core.http_client import RetryHttpClient
 from spotichart.utils.exceptions import ScrapingError
@@ -22,9 +23,7 @@ class TestRetryHttpClient:
 
     def test_client_custom_values(self):
         """Client should accept custom values."""
-        client = RetryHttpClient(
-            timeout=60, max_retries=5, retry_delay=3, user_agent="TestAgent"
-        )
+        client = RetryHttpClient(timeout=60, max_retries=5, retry_delay=3, user_agent="TestAgent")
         assert client.timeout == 60
         assert client.max_retries == 5
         assert client.retry_delay == 3

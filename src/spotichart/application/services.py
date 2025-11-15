@@ -6,7 +6,7 @@ Provides a facade for the application layer.
 """
 
 import logging
-from typing import List
+from typing import List, Union
 
 from ..core.chart_interfaces import IChartProvider
 from ..core.interfaces import IPlaylistOperations, ITrackOperations
@@ -91,7 +91,7 @@ class PlaylistApplicationService:
         public: bool = False,
         update_mode: str = "replace",
         description: str = "",
-    ) -> Result[CreatePlaylistResponse, List[ValidationError] | Exception]:
+    ) -> Result[CreatePlaylistResponse, Union[List[ValidationError], Exception]]:
         """
         Create or update a playlist from chart data.
 

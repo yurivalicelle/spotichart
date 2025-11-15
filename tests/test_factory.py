@@ -1,10 +1,12 @@
 """Tests for the SpotifyServiceFactory with Dependency Injection."""
 
+from unittest.mock import Mock, patch
+
 import pytest
-from unittest.mock import patch, Mock
+
+from spotichart.core.dependency_container import DependencyContainer
 from spotichart.core.factory import SpotifyServiceFactory
 from spotichart.core.spotify_service import SpotifyService
-from spotichart.core.dependency_container import DependencyContainer
 
 
 class TestSpotifyServiceFactory:
@@ -18,7 +20,7 @@ class TestSpotifyServiceFactory:
         """Clean up after each test."""
         SpotifyServiceFactory.reset()
 
-    @patch('spotichart.core.factory.DependencyContainer')
+    @patch("spotichart.core.factory.DependencyContainer")
     def test_create_returns_spotify_service(self, mock_container_class):
         """Should create and return SpotifyService through container."""
         # Setup mock
@@ -37,7 +39,7 @@ class TestSpotifyServiceFactory:
         mock_container.get_spotify_service.assert_called_once()
         assert service == mock_service
 
-    @patch('spotichart.core.factory.DependencyContainer')
+    @patch("spotichart.core.factory.DependencyContainer")
     def test_create_with_custom_config(self, mock_container_class):
         """Should accept and use custom configuration."""
         # Setup
@@ -55,7 +57,7 @@ class TestSpotifyServiceFactory:
         mock_container_class.assert_called_once_with(config=custom_config)
         assert service == mock_service
 
-    @patch('spotichart.core.factory.DependencyContainer')
+    @patch("spotichart.core.factory.DependencyContainer")
     def test_create_validates_configuration(self, mock_container_class):
         """Should validate configuration before creating service."""
         # Setup invalid configuration
@@ -70,7 +72,7 @@ class TestSpotifyServiceFactory:
         mock_container.validate_configuration.assert_called_once()
         mock_container.get_spotify_service.assert_not_called()
 
-    @patch('spotichart.core.factory.DependencyContainer')
+    @patch("spotichart.core.factory.DependencyContainer")
     def test_get_container_returns_container(self, mock_container_class):
         """Should provide access to the dependency container."""
         mock_container = Mock(spec=DependencyContainer)
@@ -81,7 +83,7 @@ class TestSpotifyServiceFactory:
         assert container == mock_container
         mock_container_class.assert_called_once()
 
-    @patch('spotichart.core.factory.DependencyContainer')
+    @patch("spotichart.core.factory.DependencyContainer")
     def test_reset_clears_cached_container(self, mock_container_class):
         """Should reset cached container and all dependencies."""
         # Create container
@@ -101,7 +103,7 @@ class TestSpotifyServiceFactory:
         SpotifyServiceFactory.get_container()
         assert mock_container_class.call_count == 2
 
-    @patch('spotichart.core.factory.DependencyContainer')
+    @patch("spotichart.core.factory.DependencyContainer")
     def test_container_caching(self, mock_container_class):
         """Should cache and reuse container instance."""
         mock_container = Mock(spec=DependencyContainer)

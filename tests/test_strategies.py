@@ -2,8 +2,9 @@
 Tests for Strategy Pattern (Playlist Update Strategies)
 """
 
-import pytest
 from unittest.mock import Mock, call
+
+import pytest
 
 from spotichart.core.strategies import (
     AppendStrategy,

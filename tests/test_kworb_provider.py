@@ -2,8 +2,9 @@
 Tests for Kworb Chart Provider
 """
 
-import pytest
 from unittest.mock import Mock, patch
+
+import pytest
 
 from spotichart.core.kworb_provider import KworbChartProvider, KworbUrlMapper
 from spotichart.core.models import ChartEntry, Track

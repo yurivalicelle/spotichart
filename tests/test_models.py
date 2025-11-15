@@ -68,9 +68,7 @@ class TestPlaylistMetadata:
 
     def test_playlist_collaborative(self):
         """PlaylistMetadata can be collaborative."""
-        metadata = PlaylistMetadata(
-            name="Playlist", description="Desc", collaborative=True
-        )
+        metadata = PlaylistMetadata(name="Playlist", description="Desc", collaborative=True)
         assert metadata.collaborative is True
 
     def test_playlist_immutable(self):

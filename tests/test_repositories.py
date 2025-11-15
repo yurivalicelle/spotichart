@@ -2,8 +2,9 @@
 Tests for Repository Pattern
 """
 
-import pytest
 from unittest.mock import Mock
+
+import pytest
 
 from spotichart.core.playlist_cache import PlaylistCache
 from spotichart.core.repositories import CachedPlaylistRepository
@@ -246,9 +247,7 @@ class TestCachedPlaylistRepository:
         """get_all should respect limit."""
         playlist_reader = Mock()
         playlist_reader.current_user_playlists.return_value = {
-            "items": [
-                {"id": f"pl{i}", "name": f"Playlist {i}"} for i in range(1, 101)
-            ],
+            "items": [{"id": f"pl{i}", "name": f"Playlist {i}"} for i in range(1, 101)],
             "next": None,
         }
 

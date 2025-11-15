@@ -29,6 +29,12 @@ class ScrapingError(SpotichartError):
     pass
 
 
+class ChartScrapingError(ScrapingError):
+    """Raised when chart scraping fails."""
+
+    pass
+
+
 class ConfigurationError(SpotichartError):
     """Raised when configuration is invalid."""
 

@@ -23,13 +23,6 @@ class CreatePlaylistRequest:
     update_mode: str = "replace"
     region: str = ""
 
-    def __post_init__(self):
-        """Validate on construction."""
-        if not self.name:
-            raise ValueError("Name cannot be empty")
-        if self.update_mode not in ["replace", "append", "new"]:
-            raise ValueError(f"Invalid update_mode: {self.update_mode}")
-
 
 @dataclass(frozen=True)
 class CreatePlaylistResponse:

@@ -1,15 +1,18 @@
 """Tests for the robust logger setup."""
 
-import pytest
 import logging
-from unittest.mock import patch, MagicMock
-from spotichart.utils.logger import setup_logging, get_logger
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+from spotichart.utils.logger import get_logger, setup_logging
 
 # Paths to mock
-GET_LOGGER_PATH = 'logging.getLogger'
-ROTATING_HANDLER_PATH = 'spotichart.utils.logger.RotatingFileHandler'
-STREAM_HANDLER_PATH = 'logging.StreamHandler'
-FORMATTER_PATH = 'logging.Formatter'
+GET_LOGGER_PATH = "logging.getLogger"
+ROTATING_HANDLER_PATH = "spotichart.utils.logger.RotatingFileHandler"
+STREAM_HANDLER_PATH = "logging.StreamHandler"
+FORMATTER_PATH = "logging.Formatter"
+
 
 @pytest.fixture
 def mock_logger():
@@ -19,17 +22,20 @@ def mock_logger():
         mock_get.return_value = mock_log_instance
         yield mock_log_instance
 
+
 @pytest.fixture
 def mock_rotating_handler():
     """Fixture to mock the RotatingFileHandler class."""
     with patch(ROTATING_HANDLER_PATH) as mock_handler:
         yield mock_handler
 
+
 @pytest.fixture
 def mock_stream_handler():
     """Fixture to mock the StreamHandler class."""
     with patch(STREAM_HANDLER_PATH) as mock_handler:
         yield mock_handler
+
 
 class TestLoggerSetup:
 
@@ -49,17 +55,21 @@ class TestLoggerSetup:
         assert logger.propagate is False
         assert logger is mock_logger
 
-    def test_setup_logging_debug_level(self, mock_logger, mock_rotating_handler, mock_stream_handler):
+    def test_setup_logging_debug_level(
+        self, mock_logger, mock_rotating_handler, mock_stream_handler
+    ):
         """Should set DEBUG level on logger and console handler when specified."""
-        setup_logging(log_level='DEBUG')
-        
+        setup_logging(log_level="DEBUG")
+
         mock_logger.setLevel.assert_called_once_with(logging.DEBUG)
         mock_stream_handler.return_value.setLevel.assert_called_once_with(logging.DEBUG)
 
-    def test_setup_logging_no_console(self, mock_logger, mock_rotating_handler, mock_stream_handler):
+    def test_setup_logging_no_console(
+        self, mock_logger, mock_rotating_handler, mock_stream_handler
+    ):
         """Should not add a console handler if console=False."""
         setup_logging(console=False)
-        
+
         mock_stream_handler.assert_not_called()
         # Use assert_any_call to ignore pytest's own handlers
         mock_logger.addHandler.assert_any_call(mock_rotating_handler.return_value)
@@ -76,17 +86,20 @@ class TestLoggerSetup:
         mock_logger.addHandler.assert_any_call(mock_rotating_handler.return_value)
 
     @patch(FORMATTER_PATH)
-    def test_formatters_are_created(self, mock_formatter, mock_logger, mock_rotating_handler, mock_stream_handler):
+    def test_formatters_are_created(
+        self, mock_formatter, mock_logger, mock_rotating_handler, mock_stream_handler
+    ):
         """Should create two different formatters for file and console."""
         setup_logging()
-        
+
         assert mock_formatter.call_count == 2
-        
+
         detailed_format = mock_formatter.call_args_list[0][0][0]
         simple_format = mock_formatter.call_args_list[1][0][0]
 
-        assert '[%(filename)s:%(lineno)d]' in detailed_format
-        assert '[%(filename)s:%(lineno)d]' not in simple_format
+        assert "[%(filename)s:%(lineno)d]" in detailed_format
+        assert "[%(filename)s:%(lineno)d]" not in simple_format
+
 
 class TestGetLogger:
 

@@ -7,13 +7,13 @@ Implements command handlers that orchestrate business logic.
 import logging
 import time
 from datetime import datetime
-from typing import List
+from typing import List, Union
 
 from ..core.chart_interfaces import IChartProvider
 from ..core.interfaces import IPlaylistOperations, ITrackOperations, ITrackReader
 from ..core.models import Track
 from ..utils.exceptions import ChartScrapingError, ValidationError
-from ..utils.result import Err, Ok, Result
+from ..utils.result import Failure, Result, Success
 from .commands import (
     CreatePlaylistCommand,
     ICommandHandler,
@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 
 
 class CreatePlaylistHandler(
-    ICommandHandler[CreatePlaylistResponse, List[ValidationError] | Exception]
+    ICommandHandler[CreatePlaylistResponse, Union[List[ValidationError], Exception]]
 ):
     """Handler for creating playlists from charts."""
 
@@ -75,7 +75,7 @@ class CreatePlaylistHandler(
 
     def handle(
         self, command: CreatePlaylistCommand
-    ) -> Result[CreatePlaylistResponse, List[ValidationError] | Exception]:
+    ) -> Result[CreatePlaylistResponse, Union[List[ValidationError], Exception]]:
         """
         Handle the create playlist command.
 
@@ -95,10 +95,10 @@ class CreatePlaylistHandler(
             start_time = time.time()
             chart_result = self._chart_provider.get_charts(command.region, command.limit)
 
-            if chart_result.is_err():
-                error = chart_result.unwrap_err()
+            if chart_result.is_failure():
+                error = chart_result.error
                 logger.error(f"Failed to scrape charts: {error}")
-                return Err(error)
+                return Failure(error)
 
             tracks = chart_result.unwrap()
             duration = time.time() - start_time
@@ -114,7 +114,7 @@ class CreatePlaylistHandler(
             if not tracks:
                 error_msg = f"No tracks found for region: {command.region}"
                 logger.warning(error_msg)
-                return Err(ChartScrapingError(error_msg))
+                return Failure(ChartScrapingError(error_msg))
 
             # Step 2: Build playlist request
             track_ids = [t.id for t in tracks if t.id]
@@ -129,22 +129,22 @@ class CreatePlaylistHandler(
 
             # Step 3: Validate request
             validation_result = self._validator.validate(request)
-            if validation_result.is_err():
-                errors = validation_result.unwrap_err()
+            if validation_result.is_failure():
+                errors = validation_result.error
                 self._event_bus.publish(
                     ValidationFailedEvent(
                         errors=[str(e) for e in errors],
                         context="CreatePlaylist",
                     )
                 )
-                return Err(errors)
+                return Failure(errors)
 
             # Step 4: Create or update playlist
             return self._create_or_update_playlist(request)
 
         except Exception as e:
             logger.exception(f"Unexpected error in CreatePlaylistHandler: {e}")
-            return Err(e)
+            return Failure(e)
 
     def _create_or_update_playlist(
         self, request: CreatePlaylistRequest
@@ -165,7 +165,7 @@ class CreatePlaylistHandler(
 
         except Exception as e:
             logger.exception(f"Error creating/updating playlist: {e}")
-            return Err(e)
+            return Failure(e)
 
     def _create_new_playlist(
         self, request: CreatePlaylistRequest
@@ -198,7 +198,7 @@ class CreatePlaylistHandler(
                 f"Created playlist: {request.name} ({tracks_added} tracks, {tracks_failed} failed)"
             )
 
-            return Ok(
+            return Success(
                 CreatePlaylistResponse(
                     playlist_url=playlist_url,
                     tracks_added=tracks_added,
@@ -212,7 +212,7 @@ class CreatePlaylistHandler(
 
         except Exception as e:
             logger.exception(f"Error creating new playlist: {e}")
-            return Err(e)
+            return Failure(e)
 
     def _update_existing_playlist(
         self, existing_playlist: dict, request: CreatePlaylistRequest
@@ -258,7 +258,7 @@ class CreatePlaylistHandler(
                 f"Updated playlist: {request.name} ({tracks_added} tracks, {tracks_failed} failed)"
             )
 
-            return Ok(
+            return Success(
                 CreatePlaylistResponse(
                     playlist_url=playlist_url,
                     tracks_added=tracks_added,
@@ -272,7 +272,7 @@ class CreatePlaylistHandler(
 
         except Exception as e:
             logger.exception(f"Error updating playlist: {e}")
-            return Err(e)
+            return Failure(e)
 
     def _add_tracks(self, playlist_id: str, track_ids: List[str]) -> tuple[int, int, List[str]]:
         """
@@ -346,10 +346,10 @@ class PreviewChartsHandler(ICommandHandler[ChartPreviewResponse, Exception]):
             start_time = time.time()
             result = self._chart_provider.get_charts(command.region, command.limit)
 
-            if result.is_err():
-                error = result.unwrap_err()
+            if result.is_failure():
+                error = result.error
                 logger.error(f"Failed to scrape charts: {error}")
-                return Err(error)
+                return Failure(error)
 
             tracks = result.unwrap()
             duration = time.time() - start_time
@@ -362,7 +362,7 @@ class PreviewChartsHandler(ICommandHandler[ChartPreviewResponse, Exception]):
                 )
             )
 
-            return Ok(
+            return Success(
                 ChartPreviewResponse(
                     region=command.region,
                     tracks=tracks,
@@ -373,7 +373,7 @@ class PreviewChartsHandler(ICommandHandler[ChartPreviewResponse, Exception]):
 
         except Exception as e:
             logger.exception(f"Error previewing charts: {e}")
-            return Err(e)
+            return Failure(e)
 
 
 class ListPlaylistsHandler(ICommandHandler[PlaylistListResponse, Exception]):
@@ -415,11 +415,11 @@ class ListPlaylistsHandler(ICommandHandler[PlaylistListResponse, Exception]):
                 for p in playlists_data
             ]
 
-            return Ok(PlaylistListResponse(playlists=playlists, total_count=len(playlists)))
+            return Success(PlaylistListResponse(playlists=playlists, total_count=len(playlists)))
 
         except Exception as e:
             logger.exception(f"Error listing playlists: {e}")
-            return Err(e)
+            return Failure(e)
 
 
 class ListRegionsHandler(ICommandHandler[RegionListResponse, Exception]):
@@ -458,8 +458,8 @@ class ListRegionsHandler(ICommandHandler[RegionListResponse, Exception]):
                 for region in region_names
             ]
 
-            return Ok(RegionListResponse(regions=regions))
+            return Success(RegionListResponse(regions=regions))
 
         except Exception as e:
             logger.exception(f"Error listing regions: {e}")
-            return Err(e)
+            return Failure(e)
