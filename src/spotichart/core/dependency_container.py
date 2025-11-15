@@ -160,16 +160,30 @@ class DependencyContainer:
 
     def get_spotify_service(self) -> SpotifyService:
         """
-        Get or create SpotifyService instance.
+        Get or create SpotifyService instance with all dependencies.
 
         Returns:
-            SpotifyService instance
+            SpotifyService instance with segregated interfaces injected
         """
         if self._spotify_service is None:
-            logger.info("Creating SpotifyService")
+            logger.info("Creating SpotifyService with segregated interfaces")
+
+            # Get legacy dependencies
             playlists = self.get_playlist_manager()
             tracks = self.get_track_manager()
-            self._spotify_service = SpotifyService(playlists=playlists, tracks=tracks)
+
+            # Get client (implements all segregated interfaces)
+            client = self.get_spotify_client()
+
+            # Inject both legacy and new segregated interfaces
+            # The client implements IPlaylistReader, IPlaylistWriter, ITrackWriter
+            self._spotify_service = SpotifyService(
+                playlists=playlists,
+                tracks=tracks,
+                playlist_reader=client,  # Segregated interface
+                playlist_writer=client,  # Segregated interface
+                track_writer=client,  # Segregated interface
+            )
 
         return self._spotify_service
 

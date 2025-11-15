@@ -1,32 +1,23 @@
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
 
-
-class ISpotifyAuth(ABC):
-    @abstractmethod
-    def get_client(self):
-        pass
-
-    @abstractmethod
-    def get_user_id(self) -> str:
-        pass
+# ============================================================================
+# SEGREGATED INTERFACES (Interface Segregation Principle)
+# ============================================================================
 
 
-class ISpotifyClient(ABC):
-    """Interface for Spotify API client operations."""
+class ISpotifyUserAuth(ABC):
+    """Interface for Spotify user authentication."""
 
     @property
     @abstractmethod
     def user_id(self) -> str:
-        """Get current user ID."""
+        """Get current authenticated user ID."""
         pass
 
-    @abstractmethod
-    def user_playlist_create(
-        self, user: str, name: str, public: bool = False, description: str = ""
-    ) -> Dict:
-        """Create a new playlist."""
-        pass
+
+class IPlaylistReader(ABC):
+    """Interface for reading playlist data."""
 
     @abstractmethod
     def current_user_playlists(self, limit: int = 50, offset: int = 0) -> Dict:
@@ -40,12 +31,18 @@ class ISpotifyClient(ABC):
 
     @abstractmethod
     def next(self, result: Dict) -> Optional[Dict]:
-        """Get next page of results."""
+        """Get next page of paginated results."""
         pass
 
+
+class IPlaylistWriter(ABC):
+    """Interface for writing/modifying playlists."""
+
     @abstractmethod
-    def playlist_remove_all_occurrences_of_items(self, playlist_id: str, items: List[str]) -> Dict:
-        """Remove all occurrences of tracks from playlist."""
+    def user_playlist_create(
+        self, user: str, name: str, public: bool = False, description: str = ""
+    ) -> Dict:
+        """Create a new playlist."""
         pass
 
     @abstractmethod
@@ -60,6 +57,19 @@ class ISpotifyClient(ABC):
         """Change playlist details."""
         pass
 
+
+class ITrackReader(ABC):
+    """Interface for reading track data."""
+
+    @abstractmethod
+    def track(self, track_id: str) -> Optional[Dict]:
+        """Get track information by ID."""
+        pass
+
+
+class ITrackWriter(ABC):
+    """Interface for writing/modifying tracks in playlists."""
+
     @abstractmethod
     def playlist_add_items(
         self, playlist_id: str, items: List[str], position: Optional[int] = None
@@ -68,9 +78,39 @@ class ISpotifyClient(ABC):
         pass
 
     @abstractmethod
-    def track(self, track_id: str) -> Optional[Dict]:
-        """Get track information by ID."""
+    def playlist_remove_all_occurrences_of_items(self, playlist_id: str, items: List[str]) -> Dict:
+        """Remove all occurrences of tracks from playlist."""
         pass
+
+
+# ============================================================================
+# LEGACY INTERFACES (Backward Compatibility)
+# ============================================================================
+
+
+class ISpotifyAuth(ABC):
+    """Legacy interface for authentication."""
+
+    @abstractmethod
+    def get_client(self):
+        pass
+
+    @abstractmethod
+    def get_user_id(self) -> str:
+        pass
+
+
+class ISpotifyClient(
+    ISpotifyUserAuth, IPlaylistReader, IPlaylistWriter, ITrackReader, ITrackWriter
+):
+    """
+    Legacy combined interface for Spotify API client operations.
+
+    This interface is maintained for backward compatibility.
+    New code should use the segregated interfaces instead.
+    """
+
+    pass
 
 
 class IPlaylistOperations(ABC):

@@ -97,7 +97,17 @@ class TestSpotifyServiceCreateOrUpdate:
             'external_urls': {'spotify': 'https://open.spotify.com/playlist/existing_playlist'}
         }
         mock_playlist_operations.clear.return_value = True
+
+        # Mock for new Strategy Pattern (playlist_tracks called by ReplaceStrategy)
+        mock_playlist_operations.playlist_tracks.return_value = {
+            'items': [],
+            'next': None
+        }
+        mock_playlist_operations.next.return_value = None
+        mock_playlist_operations.playlist_remove_all_occurrences_of_items.return_value = {}
+
         mock_track_operations.add_to_playlist.return_value = 5
+        mock_track_operations.playlist_add_items.return_value = {}
 
         service = SpotifyService(mock_playlist_operations, mock_track_operations)
 
@@ -113,7 +123,6 @@ class TestSpotifyServiceCreateOrUpdate:
         assert was_updated is True
 
         mock_playlist_operations.find_by_name.assert_called_once()
-        mock_playlist_operations.clear.assert_called_once()  # Replace mode clears first
 
     def test_update_append_mode(self, mock_playlist_operations, mock_track_operations):
         """Update in append mode doesn't clear."""
@@ -121,7 +130,16 @@ class TestSpotifyServiceCreateOrUpdate:
             'id': 'existing_playlist',
             'external_urls': {'spotify': 'https://open.spotify.com/playlist/existing_playlist'}
         }
+
+        # Mock for new Strategy Pattern (playlist_tracks called by AppendStrategy)
+        mock_playlist_operations.playlist_tracks.return_value = {
+            'items': [],
+            'next': None
+        }
+        mock_playlist_operations.next.return_value = None
+
         mock_track_operations.add_to_playlist.return_value = 3
+        mock_track_operations.playlist_add_items.return_value = {}
 
         service = SpotifyService(mock_playlist_operations, mock_track_operations)
 
