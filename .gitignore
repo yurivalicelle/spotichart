@@ -75,3 +75,6 @@ wheels/
 # Docker
 .docker/
 docker-compose.override.yml
+
+# AI
+.claude/
