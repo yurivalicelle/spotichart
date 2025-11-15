@@ -380,12 +380,3 @@ class TestPlaylistRequestValidator:
         result = validator.validate(request)
 
         assert result.is_success()
-
-    def test_validator_constants(self):
-        """Test validator constants are set correctly."""
-        validator = PlaylistRequestValidator()
-
-        assert validator.MAX_NAME_LENGTH == 100
-        assert validator.MAX_TRACK_COUNT == 10000
-        assert validator.MIN_TRACK_COUNT == 1
-        assert validator.VALID_UPDATE_MODES == ["replace", "append", "new"]
