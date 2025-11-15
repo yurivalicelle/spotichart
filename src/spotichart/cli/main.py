@@ -24,7 +24,7 @@ config = ConfigurationProvider()
 
 @click.group()
 @click.version_option(version="2.0.0", prog_name="Spotichart")
-@click.option('--debug', is_flag=True, help='Enable debug logging')
+@click.option("--debug", is_flag=True, help="Enable debug logging")
 @click.pass_context
 def cli(ctx, debug):
     """
@@ -34,42 +34,33 @@ def cli(ctx, debug):
     based on the latest music charts from Kworb.net.
     """
     ctx.ensure_object(dict)
-    log_level = 'DEBUG' if debug else os.getenv('LOG_LEVEL', 'INFO')
-    ctx.obj['logger'] = setup_logging(log_level=log_level)
+    log_level = "DEBUG" if debug else os.getenv("LOG_LEVEL", "INFO")
+    ctx.obj["logger"] = setup_logging(log_level=log_level)
 
 
 @cli.command()
 @click.option(
-    '--region',
-    '-r',
+    "--region",
+    "-r",
     type=click.Choice(config.get_available_regions(), case_sensitive=False),
-    default='brazil',
-    help='Chart region to scrape'
+    default="brazil",
+    help="Chart region to scrape",
 )
 @click.option(
-    '--limit',
-    '-l',
+    "--limit",
+    "-l",
     type=int,
-    default=int(os.getenv('PLAYLIST_LIMIT', '1000')),
-    help=f'Number of tracks to include (default: {os.getenv("PLAYLIST_LIMIT", "1000")})'
+    default=int(os.getenv("PLAYLIST_LIMIT", "1000")),
+    help=f'Number of tracks to include (default: {os.getenv("PLAYLIST_LIMIT", "1000")})',
 )
+@click.option("--name", "-n", type=str, help="Custom playlist name (default: auto-generated)")
+@click.option("--public", is_flag=True, help="Make playlist public (default: private)")
 @click.option(
-    '--name',
-    '-n',
-    type=str,
-    help='Custom playlist name (default: auto-generated)'
-)
-@click.option(
-    '--public',
-    is_flag=True,
-    help='Make playlist public (default: private)'
-)
-@click.option(
-    '--update-mode',
-    '-u',
-    type=click.Choice(['replace', 'append', 'new'], case_sensitive=False),
-    default='replace',
-    help='Update mode: replace (default), append, or new (always create new)'
+    "--update-mode",
+    "-u",
+    type=click.Choice(["replace", "append", "new"], case_sensitive=False),
+    default="replace",
+    help="Update mode: replace (default), append, or new (always create new)",
 )
 @click.pass_context
 def create(ctx, region, limit, name, public, update_mode):
@@ -87,13 +78,15 @@ def create(ctx, region, limit, name, public, update_mode):
         spotichart create --region brazil --limit 500 --update-mode append
         spotichart create --region brazil --limit 500 --update-mode new --name "Brazil 2024"
     """
-    logger = ctx.obj['logger']
+    logger = ctx.obj["logger"]
 
     try:
         # Validate configuration
         if not config.validate():
             console.print("[red]Error: Missing Spotify API credentials![/red]")
-            console.print("Please set SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET in your .env file")
+            console.print(
+                "Please set SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET in your .env file"
+            )
             console.print("See .env.example for reference")
             sys.exit(1)
 
@@ -109,9 +102,7 @@ def create(ctx, region, limit, name, public, update_mode):
 
         # Scrape tracks
         with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            console=console
+            SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console
         ) as progress:
             task = progress.add_task(f"Scraping {region} charts...", total=None)
 
@@ -126,9 +117,7 @@ def create(ctx, region, limit, name, public, update_mode):
 
         # Create or update Spotify playlist
         with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            console=console
+            SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console
         ) as progress:
             task = progress.add_task("Authenticating with Spotify...", total=None)
 
@@ -138,23 +127,25 @@ def create(ctx, region, limit, name, public, update_mode):
             progress.update(task, description="Processing playlist...")
 
             # Choose method based on update_mode
-            if update_mode == 'new':
+            if update_mode == "new":
                 # Always create new playlist
                 playlist_url, added_count, failed_tracks = service.create_playlist_with_tracks(
                     name=name,
-                    track_ids=[t['track'] for t in tracks],
-                    description=f'Top {limit} from Kworb {region.capitalize()} charts',
-                    public=public
+                    track_ids=[t["track"] for t in tracks],
+                    description=f"Top {limit} from Kworb {region.capitalize()} charts",
+                    public=public,
                 )
                 was_updated = False
             else:
                 # Smart create or update
-                playlist_url, added_count, failed_tracks, was_updated = service.create_or_update_playlist(
-                    name=name,
-                    track_ids=[t['track'] for t in tracks],
-                    description=f'Top {limit} from Kworb {region.capitalize()} charts',
-                    public=public,
-                    update_mode=update_mode
+                playlist_url, added_count, failed_tracks, was_updated = (
+                    service.create_or_update_playlist(
+                        name=name,
+                        track_ids=[t["track"] for t in tracks],
+                        description=f"Top {limit} from Kworb {region.capitalize()} charts",
+                        public=public,
+                        update_mode=update_mode,
+                    )
                 )
 
         # Display results
@@ -164,7 +155,7 @@ def create(ctx, region, limit, name, public, update_mode):
         console.print(f"[green]Tracks {action}:[/green] {added_count}")
 
         if was_updated:
-            mode_desc = "replaced" if update_mode == 'replace' else "appended"
+            mode_desc = "replaced" if update_mode == "replace" else "appended"
             console.print(f"[blue]Mode:[/blue] {mode_desc}")
 
         if failed_tracks:
@@ -184,18 +175,14 @@ def create(ctx, region, limit, name, public, update_mode):
 
 @cli.command()
 @click.option(
-    '--region',
-    '-r',
+    "--region",
+    "-r",
     type=click.Choice(config.get_available_regions(), case_sensitive=False),
     required=True,
-    help='Chart region to preview'
+    help="Chart region to preview",
 )
 @click.option(
-    '--limit',
-    '-l',
-    type=int,
-    default=10,
-    help='Number of tracks to preview (default: 10)'
+    "--limit", "-l", type=int, default=10, help="Number of tracks to preview (default: 10)"
 )
 @click.pass_context
 def preview(ctx, region, limit):
@@ -205,15 +192,13 @@ def preview(ctx, region, limit):
     Example:
         spotichart preview --region global --limit 20
     """
-    logger = ctx.obj['logger']
+    logger = ctx.obj["logger"]
 
     try:
         console.print(f"\n[bold cyan]Previewing {region.capitalize()} Charts[/bold cyan]\n")
 
         with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            console=console
+            SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console
         ) as progress:
             task = progress.add_task(f"Fetching {region} charts...", total=None)
 
@@ -230,7 +215,7 @@ def preview(ctx, region, limit):
         table.add_column("Track ID", style="magenta")
 
         for idx, track in enumerate(tracks, 1):
-            table.add_row(str(idx), track['track'])
+            table.add_row(str(idx), track["track"])
 
         console.print(table)
         console.print(f"\n[green]Total tracks found:[/green] {len(tracks)}")
@@ -259,16 +244,12 @@ def regions():
 
 @cli.command()
 @click.option(
-    '--limit',
-    '-l',
-    type=int,
-    default=50,
-    help='Number of playlists to show (default: 50)'
+    "--limit", "-l", type=int, default=50, help="Number of playlists to show (default: 50)"
 )
 @click.pass_context
 def list_playlists(ctx, limit):
     """List your Spotify playlists."""
-    logger = ctx.obj['logger']
+    logger = ctx.obj["logger"]
 
     try:
         if not config.validate():
@@ -278,9 +259,7 @@ def list_playlists(ctx, limit):
         console.print("\n[bold cyan]Your Spotify Playlists:[/bold cyan]\n")
 
         with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            console=console
+            SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=console
         ) as progress:
             task = progress.add_task("Loading playlists...", total=None)
 
@@ -298,14 +277,9 @@ def list_playlists(ctx, limit):
         table.add_column("Public", justify="center", style="magenta")
 
         for idx, playlist in enumerate(playlists, 1):
-            public_status = "✓" if playlist.get('public') else "✗"
-            tracks_count = playlist['tracks']['total']
-            table.add_row(
-                str(idx),
-                playlist['name'],
-                str(tracks_count),
-                public_status
-            )
+            public_status = "✓" if playlist.get("public") else "✗"
+            tracks_count = playlist["tracks"]["total"]
+            table.add_row(str(idx), playlist["name"], str(tracks_count), public_status)
 
         console.print(table)
         console.print(f"\n[green]Total playlists:[/green] {len(playlists)}")
@@ -334,17 +308,19 @@ def config(ctx):
     table.add_row(
         "Spotify Client ID",
         f"{'***' + os.getenv('SPOTIFY_CLIENT_ID', '')[-4:] if os.getenv('SPOTIFY_CLIENT_ID', '') else 'Not set'}",
-        client_id_status
+        client_id_status,
     )
     table.add_row(
         "Spotify Client Secret",
         f"{'***' + os.getenv('SPOTIFY_CLIENT_SECRET', '')[-4:] if os.getenv('SPOTIFY_CLIENT_SECRET', '') else 'Not set'}",
-        client_secret_status
+        client_secret_status,
     )
     table.add_row("Redirect URI", os.getenv("REDIRECT_URI", "http://localhost:8888/callback"), "✓")
     table.add_row("Default Limit", str(int(os.getenv("PLAYLIST_LIMIT", "1000"))), "✓")
     table.add_row("Log Level", os.getenv("LOG_LEVEL", "INFO"), "✓")
-    table.add_row("Log File", str(Path(__file__).parent.parent.parent / "logs" / "spotichart.log"), "✓")
+    table.add_row(
+        "Log File", str(Path(__file__).parent.parent.parent / "logs" / "spotichart.log"), "✓"
+    )
 
     console.print(table)
 
@@ -355,5 +331,5 @@ def config(ctx):
         console.print("Please set SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET in .env")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli(obj={})

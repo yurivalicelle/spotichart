@@ -8,6 +8,7 @@ import os
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
 try:
     import yaml
 except ImportError:
@@ -46,7 +47,7 @@ class ConfigurationProvider(IConfiguration):
         if config_file is None:
             # Search for config.yaml in project root
             project_root = Path(__file__).parent.parent.parent.parent
-            config_file = project_root / 'config.yaml'
+            config_file = project_root / "config.yaml"
 
         self.config_file = config_file
 
@@ -56,7 +57,7 @@ class ConfigurationProvider(IConfiguration):
     def _load_env(self) -> None:
         """Load environment variables from .env file."""
         if not self._env_loaded:
-            env_path = Path(__file__).parent.parent.parent.parent / '.env'
+            env_path = Path(__file__).parent.parent.parent.parent / ".env"
             if env_path.exists():
                 load_dotenv(dotenv_path=env_path)
                 logger.info(f"Loaded environment variables from {env_path}")
@@ -81,7 +82,7 @@ class ConfigurationProvider(IConfiguration):
             return
 
         try:
-            with open(self.config_file, 'r') as f:
+            with open(self.config_file, "r") as f:
                 self._config = yaml.safe_load(f) or {}
             logger.info(f"Loaded configuration from {self.config_file}")
 
@@ -101,41 +102,32 @@ class ConfigurationProvider(IConfiguration):
             Default configuration dictionary
         """
         return {
-            'app': {
-                'name': 'Spotichart',
-                'version': '2.0.0'
+            "app": {"name": "Spotichart", "version": "2.0.0"},
+            "spotify": {
+                "scope": "playlist-modify-private playlist-modify-public",
+                "batch_size": 100,
+                "max_retries": 3,
+                "retry_delay": 2,
             },
-            'spotify': {
-                'scope': 'playlist-modify-private playlist-modify-public',
-                'batch_size': 100,
-                'max_retries': 3,
-                'retry_delay': 2
-            },
-            'kworb_urls': {
-                'brazil': {
-                    'url': 'https://kworb.net/spotify/country/br_weekly_totals.html',
-                    'display_name': 'Brazil'
+            "kworb_urls": {
+                "brazil": {
+                    "url": "https://kworb.net/spotify/country/br_weekly_totals.html",
+                    "display_name": "Brazil",
                 },
-                'global': {
-                    'url': 'https://kworb.net/spotify/country/global_weekly_totals.html',
-                    'display_name': 'Global'
-                }
+                "global": {
+                    "url": "https://kworb.net/spotify/country/global_weekly_totals.html",
+                    "display_name": "Global",
+                },
             },
-            'settings': {
-                'default_playlist_limit': 1000,
-                'request_timeout': 30
+            "settings": {"default_playlist_limit": 1000, "request_timeout": 30},
+            "cache": {"enabled": True, "ttl_hours": 24},
+            "logging": {
+                "level": "INFO",
+                "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                "max_bytes": 10485760,
+                "backup_count": 5,
+                "log_file": "logs/spotichart.log",
             },
-            'cache': {
-                'enabled': True,
-                'ttl_hours': 24
-            },
-            'logging': {
-                'level': 'INFO',
-                'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                'max_bytes': 10485760,
-                'backup_count': 5,
-                'log_file': 'logs/spotichart.log'
-            }
         }
 
     def get(self, key: str, default: Any = None) -> Any:
@@ -156,13 +148,13 @@ class ConfigurationProvider(IConfiguration):
             30
         """
         # Try environment variable first for sensitive data
-        env_key = key.upper().replace('.', '_')
+        env_key = key.upper().replace(".", "_")
         env_value = os.getenv(env_key)
         if env_value is not None:
             return env_value
 
         # Navigate through nested dictionary
-        keys = key.split('.')
+        keys = key.split(".")
         value = self._config
 
         for k in keys:
@@ -173,7 +165,7 @@ class ConfigurationProvider(IConfiguration):
 
         return value
 
-    def get_kworb_url(self, region: str = 'brazil') -> str:
+    def get_kworb_url(self, region: str = "brazil") -> str:
         """
         Get Kworb URL for specific region.
 
@@ -183,20 +175,20 @@ class ConfigurationProvider(IConfiguration):
         Returns:
             URL for the specified region
         """
-        kworb_urls = self.get('kworb_urls', {})
+        kworb_urls = self.get("kworb_urls", {})
 
         # Ensure kworb_urls is a dict
         if not isinstance(kworb_urls, dict):
-            return ''
+            return ""
 
         region_config = kworb_urls.get(region.lower())
 
         if region_config and isinstance(region_config, dict):
-            return region_config.get('url', '')
+            return region_config.get("url", "")
 
         # Fallback to brazil
-        brazil_config = kworb_urls.get('brazil', {})
-        return brazil_config.get('url', '') if isinstance(brazil_config, dict) else ''
+        brazil_config = kworb_urls.get("brazil", {})
+        return brazil_config.get("url", "") if isinstance(brazil_config, dict) else ""
 
     def get_available_regions(self) -> List[str]:
         """
@@ -205,7 +197,7 @@ class ConfigurationProvider(IConfiguration):
         Returns:
             List of region names
         """
-        kworb_urls = self.get('kworb_urls', {})
+        kworb_urls = self.get("kworb_urls", {})
         return list(kworb_urls.keys())
 
     def validate(self) -> bool:
@@ -215,10 +207,7 @@ class ConfigurationProvider(IConfiguration):
         Returns:
             True if configuration is valid, False otherwise
         """
-        required_env_vars = [
-            'SPOTIFY_CLIENT_ID',
-            'SPOTIFY_CLIENT_SECRET'
-        ]
+        required_env_vars = ["SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET"]
 
         missing = []
         for var in required_env_vars:
@@ -231,7 +220,7 @@ class ConfigurationProvider(IConfiguration):
             return False
 
         # Validate essential configuration
-        if not self.get('spotify.scope'):
+        if not self.get("spotify.scope"):
             logger.error("Missing Spotify scope in configuration")
             return False
 

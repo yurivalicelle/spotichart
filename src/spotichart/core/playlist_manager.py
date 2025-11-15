@@ -25,7 +25,7 @@ class PlaylistManager(IPlaylistOperations):
         client: ISpotifyClient,
         cache: Optional[PlaylistCache] = None,
         cache_file: Optional[Path] = None,
-        cache_ttl_hours: int = 24
+        cache_ttl_hours: int = 24,
     ):
         """
         Initialize playlist manager with dependency injection.
@@ -44,7 +44,7 @@ class PlaylistManager(IPlaylistOperations):
         else:
             # Default cache file location if not specified
             if cache_file is None:
-                cache_file = Path.home() / '.spotichart' / 'cache' / 'playlists.json'
+                cache_file = Path.home() / ".spotichart" / "cache" / "playlists.json"
             self.cache = PlaylistCache(cache_file=cache_file, ttl_hours=cache_ttl_hours)
 
     def create(self, name: str, description: str, public: bool = False):
@@ -67,10 +67,7 @@ class PlaylistManager(IPlaylistOperations):
             user_id = self.client.user_id
 
             playlist = self.client.user_playlist_create(
-                user=user_id,
-                name=name,
-                public=public,
-                description=description
+                user=user_id, name=name, public=public, description=description
             )
 
             # Add to cache
@@ -110,9 +107,9 @@ class PlaylistManager(IPlaylistOperations):
             while True:
                 playlists = self.client.current_user_playlists(limit=limit, offset=offset)
 
-                for item in playlists['items']:
+                for item in playlists["items"]:
                     checked_count += 1
-                    playlist_name = item['name']
+                    playlist_name = item["name"]
                     logger.debug(f"Checking playlist #{checked_count}: '{playlist_name}'")
 
                     if playlist_name.lower().strip() == name.lower().strip():
@@ -122,7 +119,7 @@ class PlaylistManager(IPlaylistOperations):
                         return item
 
                 # Check if there are more playlists
-                if not playlists.get('next'):
+                if not playlists.get("next"):
                     break
 
                 offset += limit
@@ -150,19 +147,19 @@ class PlaylistManager(IPlaylistOperations):
             # Get all tracks
             tracks = []
             results = self.client.playlist_tracks(playlist_id)
-            tracks.extend(results['items'])
+            tracks.extend(results["items"])
 
-            while results.get('next'):
+            while results.get("next"):
                 results = self.client.next(results)
-                tracks.extend(results['items'])
+                tracks.extend(results["items"])
 
             # Extract track URIs
-            track_uris = [item['track']['uri'] for item in tracks if item.get('track')]
+            track_uris = [item["track"]["uri"] for item in tracks if item.get("track")]
 
             # Remove in batches of 100
             if track_uris:
                 for i in range(0, len(track_uris), 100):
-                    batch = track_uris[i:i + 100]
+                    batch = track_uris[i : i + 100]
                     self.client.playlist_remove_all_occurrences_of_items(playlist_id, batch)
                     logger.debug(f"Removed batch {i // 100 + 1}")
 
@@ -211,7 +208,7 @@ class PlaylistManager(IPlaylistOperations):
         try:
             logger.info(f"Fetching user playlists (limit={limit})")
             result = self.client.current_user_playlists(limit=limit)
-            playlists = result.get('items', [])
+            playlists = result.get("items", [])
             logger.info(f"Retrieved {len(playlists)} playlists")
             return playlists
 

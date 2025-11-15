@@ -16,7 +16,7 @@ from ..utils.configuration_provider import ConfigurationProvider
 logger = logging.getLogger(__name__)
 
 # Default configuration values
-DEFAULT_REQUEST_TIMEOUT = int(os.getenv('REQUEST_TIMEOUT', '30'))
+DEFAULT_REQUEST_TIMEOUT = int(os.getenv("REQUEST_TIMEOUT", "30"))
 DEFAULT_MAX_RETRIES = 3
 DEFAULT_RETRY_DELAY = 2
 
@@ -38,10 +38,12 @@ class KworbScraper:
         self.timeout = timeout or DEFAULT_REQUEST_TIMEOUT
         self.max_retries = max_retries or DEFAULT_MAX_RETRIES
         self.session = requests.Session()
-        self.session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
-                         '(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        })
+        self.session.headers.update(
+            {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            }
+        )
 
     def _fetch_page(self, url: str) -> str:
         """
@@ -63,7 +65,7 @@ class KworbScraper:
                 logger.debug(f"Fetching URL (attempt {attempt}/{self.max_retries}): {url}")
                 response = self.session.get(url, timeout=self.timeout)
                 response.raise_for_status()
-                return response.content.decode('utf-8')
+                return response.content.decode("utf-8")
 
             except requests.RequestException as e:
                 last_error = e
@@ -92,20 +94,20 @@ class KworbScraper:
             ScrapingError: If table parsing fails
         """
         try:
-            soup = BeautifulSoup(html, 'html.parser')
+            soup = BeautifulSoup(html, "html.parser")
 
             # Try multiple selectors to find the table
             table = None
             selectors = [
-                {'class': 'display'},
-                {'class': 'addpos'},
-                {'id': 'spotifyweekly'},
-                {'class': 'data'},
-                {'class': 'chart'}
+                {"class": "display"},
+                {"class": "addpos"},
+                {"id": "spotifyweekly"},
+                {"class": "data"},
+                {"class": "chart"},
             ]
 
             for selector in selectors:
-                table = soup.find('table', selector)
+                table = soup.find("table", selector)
                 if table:
                     logger.debug(f"Found table with selector: {selector}")
                     break
@@ -115,26 +117,26 @@ class KworbScraper:
 
             # Extract data
             tracks = []
-            tbody = table.find('tbody')
+            tbody = table.find("tbody")
 
             if not tbody:
                 raise ScrapingError("Table body not found")
 
-            rows = tbody.find_all('tr', limit=limit)
+            rows = tbody.find_all("tr", limit=limit)
             logger.info(f"Found {len(rows)} rows in table")
 
             for row in rows:
-                cells = row.find_all('a')
+                cells = row.find_all("a")
                 track_id = None
 
                 for cell in cells:
-                    href = cell.attrs.get('href', '')
-                    if href.startswith('../track'):
-                        track_id = href.replace('../track/', '').replace('.html', '').strip()
+                    href = cell.attrs.get("href", "")
+                    if href.startswith("../track"):
+                        track_id = href.replace("../track/", "").replace(".html", "").strip()
                         break
 
                 if track_id:
-                    tracks.append({'track': track_id})
+                    tracks.append({"track": track_id})
 
             logger.info(f"Extracted {len(tracks)} tracks")
             return tracks
@@ -172,7 +174,7 @@ class KworbScraper:
             logger.error(f"Unexpected scraping error: {str(e)}")
             raise ScrapingError(f"Scraping failed: {str(e)}") from e
 
-    def scrape_region(self, region: str = 'brazil', limit: int = 1000) -> List[Dict[str, str]]:
+    def scrape_region(self, region: str = "brazil", limit: int = 1000) -> List[Dict[str, str]]:
         """
         Scrape tracks for a specific region.
 

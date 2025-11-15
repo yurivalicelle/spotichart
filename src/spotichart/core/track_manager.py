@@ -63,7 +63,7 @@ class TrackManager(ITrackOperations):
             # Add tracks in batches of 100 (Spotify API limit)
             batch_size = 100
             for i in range(0, len(track_uris), batch_size):
-                batch = track_uris[i:i + batch_size]
+                batch = track_uris[i : i + batch_size]
                 self.client.playlist_add_items(playlist_id, batch)
                 added_count += len(batch)
                 logger.debug(f"Added batch {i // batch_size + 1}: {len(batch)} tracks")

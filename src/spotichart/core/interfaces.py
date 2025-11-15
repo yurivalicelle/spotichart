@@ -11,6 +11,7 @@ class ISpotifyAuth(ABC):
     def get_user_id(self) -> str:
         pass
 
+
 class ISpotifyClient(ABC):
     """Interface for Spotify API client operations."""
 
@@ -21,7 +22,9 @@ class ISpotifyClient(ABC):
         pass
 
     @abstractmethod
-    def user_playlist_create(self, user: str, name: str, public: bool = False, description: str = '') -> Dict:
+    def user_playlist_create(
+        self, user: str, name: str, public: bool = False, description: str = ""
+    ) -> Dict:
         """Create a new playlist."""
         pass
 
@@ -46,14 +49,21 @@ class ISpotifyClient(ABC):
         pass
 
     @abstractmethod
-    def playlist_change_details(self, playlist_id: str, name: Optional[str] = None,
-                                public: Optional[bool] = None, collaborative: Optional[bool] = None,
-                                description: Optional[str] = None) -> None:
+    def playlist_change_details(
+        self,
+        playlist_id: str,
+        name: Optional[str] = None,
+        public: Optional[bool] = None,
+        collaborative: Optional[bool] = None,
+        description: Optional[str] = None,
+    ) -> None:
         """Change playlist details."""
         pass
 
     @abstractmethod
-    def playlist_add_items(self, playlist_id: str, items: List[str], position: Optional[int] = None) -> Dict:
+    def playlist_add_items(
+        self, playlist_id: str, items: List[str], position: Optional[int] = None
+    ) -> Dict:
         """Add tracks to a playlist."""
         pass
 
@@ -61,6 +71,7 @@ class ISpotifyClient(ABC):
     def track(self, track_id: str) -> Optional[Dict]:
         """Get track information by ID."""
         pass
+
 
 class IPlaylistOperations(ABC):
     @abstractmethod
@@ -82,6 +93,7 @@ class IPlaylistOperations(ABC):
     @abstractmethod
     def get_all(self, limit: int = 50):
         pass
+
 
 class ITrackOperations(ABC):
     @abstractmethod

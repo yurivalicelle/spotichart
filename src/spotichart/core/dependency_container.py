@@ -63,16 +63,18 @@ class DependencyContainer:
             logger.info("Creating SpotifyAuthenticator")
 
             # Get configuration values
-            client_id = self._config.get('SPOTIFY_CLIENT_ID')
-            client_secret = self._config.get('SPOTIFY_CLIENT_SECRET')
-            redirect_uri = self._config.get('REDIRECT_URI', 'http://localhost:8888/callback')
-            scope = self._config.get('spotify.scope', 'playlist-modify-private playlist-modify-public')
-            request_timeout = self._config.get('settings.request_timeout', 30)
+            client_id = self._config.get("SPOTIFY_CLIENT_ID")
+            client_secret = self._config.get("SPOTIFY_CLIENT_SECRET")
+            redirect_uri = self._config.get("REDIRECT_URI", "http://localhost:8888/callback")
+            scope = self._config.get(
+                "spotify.scope", "playlist-modify-private playlist-modify-public"
+            )
+            request_timeout = self._config.get("settings.request_timeout", 30)
 
             # Create cache directory
-            cache_dir = Path.home() / '.spotichart' / 'cache'
+            cache_dir = Path.home() / ".spotichart" / "cache"
             cache_dir.mkdir(parents=True, exist_ok=True)
-            cache_path = cache_dir / 'spotify_token.cache'
+            cache_path = cache_dir / "spotify_token.cache"
 
             self._authenticator = SpotifyAuthenticator(
                 client_id=client_id,
@@ -80,7 +82,7 @@ class DependencyContainer:
                 redirect_uri=redirect_uri,
                 scope=scope,
                 cache_path=cache_path,
-                request_timeout=request_timeout
+                request_timeout=request_timeout,
             )
 
         return self._authenticator
@@ -109,13 +111,17 @@ class DependencyContainer:
         if self._playlist_cache is None:
             logger.info("Creating PlaylistCache")
 
-            cache_enabled = self._config.get('cache.enabled', True)
-            cache_ttl_hours = self._config.get('cache.ttl_hours', 24)
+            cache_enabled = self._config.get("cache.enabled", True)
+            cache_ttl_hours = self._config.get("cache.ttl_hours", 24)
 
             if cache_enabled:
-                cache_file_str = self._config.get('cache.playlist_cache_file', '.spotichart/cache/playlists.json')
+                cache_file_str = self._config.get(
+                    "cache.playlist_cache_file", ".spotichart/cache/playlists.json"
+                )
                 cache_file = Path.home() / cache_file_str
-                self._playlist_cache = PlaylistCache(cache_file=cache_file, ttl_hours=cache_ttl_hours)
+                self._playlist_cache = PlaylistCache(
+                    cache_file=cache_file, ttl_hours=cache_ttl_hours
+                )
             else:
                 # In-memory cache only
                 self._playlist_cache = PlaylistCache(cache_file=None, ttl_hours=cache_ttl_hours)

@@ -48,9 +48,7 @@ class SpotifyServiceFactory:
 
         # Validate configuration
         if not cls._container.validate_configuration():
-            raise ValueError(
-                "Invalid configuration. Please check your .env file and config.yaml"
-            )
+            raise ValueError("Invalid configuration. Please check your .env file and config.yaml")
 
         # Get service from container
         return cls._container.get_spotify_service()

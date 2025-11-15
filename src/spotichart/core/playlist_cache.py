@@ -37,15 +37,15 @@ class PlaylistCache:
             return
 
         try:
-            with open(self.cache_file, 'r') as f:
+            with open(self.cache_file, "r") as f:
                 cache_data = json.load(f)
 
             # Filter out expired entries
             now = datetime.now()
             for key, value in cache_data.items():
-                cached_at = datetime.fromisoformat(value.get('cached_at', ''))
+                cached_at = datetime.fromisoformat(value.get("cached_at", ""))
                 if now - cached_at < self.ttl:
-                    self._cache[key] = value['playlist']
+                    self._cache[key] = value["playlist"]
 
             logger.info(f"Loaded {len(self._cache)} entries from cache file")
 
@@ -64,11 +64,10 @@ class PlaylistCache:
 
             now = datetime.now().isoformat()
             cache_data = {
-                key: {'playlist': value, 'cached_at': now}
-                for key, value in self._cache.items()
+                key: {"playlist": value, "cached_at": now} for key, value in self._cache.items()
             }
 
-            with open(self.cache_file, 'w') as f:
+            with open(self.cache_file, "w") as f:
                 json.dump(cache_data, f, indent=2)
 
             logger.debug(f"Saved {len(self._cache)} entries to cache file")

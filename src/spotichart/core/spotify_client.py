@@ -55,7 +55,9 @@ class SpotifyClient(ISpotifyClient):
         """
         return self._authenticator.get_user_id()
 
-    def user_playlist_create(self, user: str, name: str, public: bool = False, description: str = '') -> Dict:
+    def user_playlist_create(
+        self, user: str, name: str, public: bool = False, description: str = ""
+    ) -> Dict:
         """
         Create a new playlist.
 
@@ -70,10 +72,7 @@ class SpotifyClient(ISpotifyClient):
         """
         logger.info(f"Creating playlist: {name}")
         return self.sp.user_playlist_create(
-            user=user,
-            name=name,
-            public=public,
-            description=description
+            user=user, name=name, public=public, description=description
         )
 
     def current_user_playlists(self, limit: int = 50, offset: int = 0) -> Dict:
@@ -126,9 +125,14 @@ class SpotifyClient(ISpotifyClient):
         """
         return self.sp.playlist_remove_all_occurrences_of_items(playlist_id, items)
 
-    def playlist_change_details(self, playlist_id: str, name: Optional[str] = None,
-                                public: Optional[bool] = None, collaborative: Optional[bool] = None,
-                                description: Optional[str] = None) -> None:
+    def playlist_change_details(
+        self,
+        playlist_id: str,
+        name: Optional[str] = None,
+        public: Optional[bool] = None,
+        collaborative: Optional[bool] = None,
+        description: Optional[str] = None,
+    ) -> None:
         """
         Change playlist details.
 
@@ -144,10 +148,12 @@ class SpotifyClient(ISpotifyClient):
             name=name,
             public=public,
             collaborative=collaborative,
-            description=description
+            description=description,
         )
 
-    def playlist_add_items(self, playlist_id: str, items: List[str], position: Optional[int] = None) -> Dict:
+    def playlist_add_items(
+        self, playlist_id: str, items: List[str], position: Optional[int] = None
+    ) -> Dict:
         """
         Add tracks to a playlist.
 

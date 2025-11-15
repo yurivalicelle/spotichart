@@ -24,7 +24,7 @@ class SpotifyAuthenticator:
         redirect_uri: str,
         scope: str,
         cache_path: Optional[Path] = None,
-        request_timeout: int = 30
+        request_timeout: int = 30,
     ):
         """
         Initialize Spotify authenticator.
@@ -75,13 +75,13 @@ class SpotifyAuthenticator:
                 scope=self.scope,
                 show_dialog=True,
                 requests_timeout=self.request_timeout,
-                cache_path=cache_path_str
+                cache_path=cache_path_str,
             )
             self._sp = spotipy.Spotify(auth_manager=auth_manager)
 
             # Verify authentication by getting user info
             user_info = self._sp.me()
-            self._user_id = user_info['id']
+            self._user_id = user_info["id"]
             logger.info(f"Successfully authenticated as user: {self._user_id}")
 
             return self._sp
