@@ -54,7 +54,6 @@ WORKDIR /app
 
 # Copy application code
 COPY --chown=appuser:appuser src/ /app/src/
-COPY --chown=appuser:appuser templates/ /app/templates/
 COPY --chown=appuser:appuser .env.example /app/
 
 # Switch to non-root user
@@ -65,5 +64,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD python -c "import sys; sys.exit(0)"
 
 # Default command
-ENTRYPOINT ["spotify-playlist"]
+ENTRYPOINT ["spotichart"]
 CMD ["--help"]

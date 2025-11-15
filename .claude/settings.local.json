@@ -7,7 +7,15 @@
       "Bash(spotify-playlist preview:*)",
       "Bash(spotify-playlist create:*)",
       "Bash(spotify-playlist list-playlists:*)",
-      "Bash(python -m pytest:*)"
+      "Bash(python -m pytest:*)",
+      "Bash(find:*)",
+      "Bash(tree:*)",
+      "Bash(pip install:*)",
+      "Bash(spotichart --help:*)",
+      "Bash(spotichart regions:*)",
+      "Bash(spotichart config:*)",
+      "Bash(make run-brazil:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

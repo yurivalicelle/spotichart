@@ -141,28 +141,55 @@ spotichart config
 
 ### Python API
 
-You can also use the package programmatically:
+You can also use the package programmatically with the new SOLID architecture:
 
 ```python
-from spotichart import SpotifyClient, KworbScraper, Config
+from spotichart.core.factory import SpotifyServiceFactory
+from spotichart.core.scraper import KworbScraper
+from spotichart.config import Config
 
-# Initialize components
-scraper = KworbScraper()
-client = SpotifyClient()
+# Using the Factory Pattern with Dependency Injection
+service = SpotifyServiceFactory.create()
+
+# Or get the DependencyContainer for advanced usage
+container = SpotifyServiceFactory.get_container()
+playlist_manager = container.get_playlist_manager()
+track_manager = container.get_track_manager()
 
 # Scrape tracks
+scraper = KworbScraper()
 tracks = scraper.scrape_region('brazil', limit=100)
 
+# Create playlist using the service
+track_ids = [t['track'] for t in tracks]
+track_uris = [track_manager.build_uri(tid) for tid in track_ids]
+
 # Create playlist
-url, count, failed = client.create_playlist_with_tracks(
+playlist = playlist_manager.create(
     name="My Playlist",
-    track_ids=[t['track'] for t in tracks],
     description="Top 100 from Brazil",
     public=False
 )
 
-print(f"Created playlist: {url}")
-print(f"Added {count} tracks, {len(failed)} failed")
+# Add tracks
+count = track_manager.add_to_playlist(playlist['id'], track_uris)
+
+print(f"Created playlist: {playlist['external_urls']['spotify']}")
+print(f"Added {count} tracks")
+```
+
+**Advanced: Custom Configuration**
+
+```python
+from pathlib import Path
+from spotichart.utils.configuration_provider import ConfigurationProvider
+from spotichart.core.factory import SpotifyServiceFactory
+
+# Load custom configuration
+config = ConfigurationProvider(config_file=Path('my_config.yaml'))
+
+# Create service with custom config
+service = SpotifyServiceFactory.create(config=config)
 ```
 
 ## Docker

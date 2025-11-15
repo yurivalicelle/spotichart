@@ -1,4 +1,4 @@
-# Contributing to Spotify Playlist Creator
+# Contributing to Spotichart
 
 Thank you for considering contributing to this project! Here are some guidelines to help you get started.
 
@@ -23,19 +23,22 @@ Thank you for considering contributing to this project! Here are some guidelines
 
 ```bash
 # Clone your fork
-git clone https://github.com/yourusername/spotify-playlist-creator.git
-cd spotify-playlist-creator
+git clone https://github.com/yourusername/spotichart.git
+cd spotichart
 
 # Create a virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Install dependencies
-pip install -r requirements.txt
+# Install with development dependencies
+pip install -e ".[dev]"
+
+# Install pre-commit hooks
+pre-commit install
 
 # Copy environment variables template
 cp .env.example .env
-# Edit .env with your credentials
+# Edit .env with your Spotify credentials
 ```
 
 ## Code Style
@@ -46,6 +49,8 @@ This project follows these coding standards:
 - **Type Hints**: Add type hints to all function signatures
 - **Docstrings**: Document all functions, classes, and modules using Google-style docstrings
 - **Line Length**: Maximum 100 characters per line
+- **SOLID Principles**: Follow SOLID design principles (see docs/SOLID_GUIDE.md)
+- **Dependency Injection**: Use interfaces and dependency injection for loose coupling
 
 ### Example Function
 
@@ -72,17 +77,81 @@ def example_function(param1: str, param2: int) -> bool:
 
 Before submitting a pull request, ensure that:
 
-1. Your code works correctly
-2. You've tested edge cases
-3. No existing functionality is broken
-4. Logging messages are appropriate
+1. All tests pass
+2. Code coverage is at least 90%
+3. You've added tests for new functionality
+4. Edge cases are covered
+5. No existing functionality is broken
 
 ### Running Tests
 
 ```bash
-# Run the application in test mode
-python app.py
+# Run all tests
+pytest
+
+# Run with coverage report
+pytest --cov=spotichart --cov-report=html --cov-report=term
+
+# Run specific test file
+pytest tests/test_spotify_client.py -v
+
+# Run with verbose output
+pytest -vv
+
+# Use Makefile shortcuts
+make test          # Run all tests
+make coverage      # Run with coverage report
 ```
+
+### Writing Tests
+
+- Follow the existing test structure in `tests/`
+- Use pytest fixtures for common setups
+- Mock external dependencies (Spotify API, HTTP requests)
+- Test both success and failure cases
+- Aim for 90%+ code coverage on new code
+
+## Architecture Guidelines
+
+This project follows **SOLID principles** for maintainable, testable code:
+
+### Key Architectural Concepts
+
+1. **Interfaces**: Use abstract base classes from `spotichart.core.interfaces` and `spotichart.utils.interfaces`
+2. **Dependency Injection**: Inject dependencies through constructors
+3. **Factory Pattern**: Use `SpotifyServiceFactory` to create service instances
+4. **Separation of Concerns**: Keep authentication, caching, and business logic separate
+
+### Example: Adding a New Feature
+
+```python
+from spotichart.core.interfaces import ISpotifyClient
+from spotichart.utils.interfaces import IConfiguration
+
+class MyNewManager:
+    """Manager that depends on abstractions, not concrete classes."""
+
+    def __init__(self, client: ISpotifyClient, config: IConfiguration):
+        self.client = client  # Depends on interface, not SpotifyClient
+        self.config = config
+
+    def do_something(self) -> None:
+        # Use client interface methods
+        playlists = self.client.current_user_playlists()
+        # ...
+```
+
+### Code Organization
+
+- **Core business logic**: `src/spotichart/core/`
+- **Interfaces**: `src/spotichart/core/interfaces.py` and `src/spotichart/utils/interfaces.py`
+- **Utilities**: `src/spotichart/utils/`
+- **CLI**: `src/spotichart/cli/`
+- **Tests**: `tests/` (mirror the src structure)
+
+For more details, see:
+- `docs/ARCHITECTURE.md` - Complete architecture documentation
+- `docs/SOLID_GUIDE.md` - SOLID principles guide
 
 ## Commit Messages
 

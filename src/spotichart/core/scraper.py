@@ -5,14 +5,23 @@ Handles scraping of music charts from Kworb.net.
 """
 
 import logging
+import os
 from typing import List, Dict, Optional
 import time
 import requests
 from bs4 import BeautifulSoup
-from ..config import Config
 from ..utils.exceptions import ScrapingError
+from ..utils.configuration_provider import ConfigurationProvider
 
 logger = logging.getLogger(__name__)
+
+# Default configuration values
+DEFAULT_REQUEST_TIMEOUT = int(os.getenv('REQUEST_TIMEOUT', '30'))
+DEFAULT_MAX_RETRIES = 3
+DEFAULT_RETRY_DELAY = 2
+
+# Initialize configuration provider
+_config = ConfigurationProvider()
 
 
 class KworbScraper:
@@ -26,8 +35,8 @@ class KworbScraper:
             timeout: Request timeout in seconds
             max_retries: Maximum number of retry attempts
         """
-        self.timeout = timeout or Config.REQUEST_TIMEOUT
-        self.max_retries = max_retries or Config.MAX_RETRIES
+        self.timeout = timeout or DEFAULT_REQUEST_TIMEOUT
+        self.max_retries = max_retries or DEFAULT_MAX_RETRIES
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
@@ -61,7 +70,7 @@ class KworbScraper:
                 logger.warning(f"Attempt {attempt} failed: {str(e)}")
 
                 if attempt < self.max_retries:
-                    sleep_time = Config.RETRY_DELAY * attempt
+                    sleep_time = DEFAULT_RETRY_DELAY * attempt
                     logger.info(f"Retrying in {sleep_time} seconds...")
                     time.sleep(sleep_time)
 
@@ -177,7 +186,7 @@ class KworbScraper:
         Raises:
             ScrapingError: If scraping fails
         """
-        url = Config.get_kworb_url(region)
+        url = _config.get_kworb_url(region)
         logger.info(f"Scraping {region} charts")
         return self.scrape(url, limit)
 

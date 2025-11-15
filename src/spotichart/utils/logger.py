@@ -5,10 +5,10 @@ Sets up advanced logging with rotation and formatting.
 """
 
 import logging
+import os
 import sys
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from ..config import Config
 
 
 def setup_logging(
@@ -21,17 +21,27 @@ def setup_logging(
 
     Args:
         log_level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-        log_file: Path to log file (uses Config default if not provided)
+        log_file: Path to log file (default: logs/spotichart.log)
         console: Whether to also log to console
 
     Returns:
         Configured logger instance
     """
+    # Default configuration values
+    default_log_level = os.getenv('LOG_LEVEL', 'INFO')
+    default_log_dir = Path(__file__).parent.parent.parent / 'logs'
+    default_log_file = str(default_log_dir / 'spotichart.log')
+    default_max_bytes = 10485760  # 10MB
+    default_backup_count = 5
+
     # Ensure log directory exists
-    Config.setup_directories()
+    if log_file:
+        Path(log_file).parent.mkdir(parents=True, exist_ok=True)
+    else:
+        default_log_dir.mkdir(parents=True, exist_ok=True)
 
     # Get log level
-    level = getattr(logging, (log_level or Config.LOG_LEVEL).upper(), logging.INFO)
+    level = getattr(logging, (log_level or default_log_level).upper(), logging.INFO)
 
     # Create logger
     logger = logging.getLogger('spotichart')
@@ -52,12 +62,12 @@ def setup_logging(
     )
 
     # File handler with rotation
-    if log_file or Config.LOG_FILE:
-        file_path = log_file or Config.LOG_FILE
+    if log_file or default_log_file:
+        file_path = log_file or default_log_file
         file_handler = RotatingFileHandler(
             file_path,
-            maxBytes=Config.LOG_MAX_BYTES,
-            backupCount=Config.LOG_BACKUP_COUNT,
+            maxBytes=default_max_bytes,
+            backupCount=default_backup_count,
             encoding='utf-8'
         )
         file_handler.setLevel(logging.DEBUG)  # Log everything to file

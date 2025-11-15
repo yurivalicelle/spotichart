@@ -1,0 +1,53 @@
+# Spotichart Configuration File
+# This file allows you to customize settings without modifying code (Open/Closed Principle)
+
+# Application Information
+app:
+  name: "Spotichart"
+  version: "2.0.0"
+
+# Spotify API Configuration
+# Note: Sensitive credentials should still use environment variables (.env file)
+spotify:
+  scope: "playlist-modify-private playlist-modify-public"
+  batch_size: 100
+  max_retries: 3
+  retry_delay: 2  # seconds
+
+# Kworb URLs - Add new regions here without modifying code
+kworb_urls:
+  brazil:
+    url: "https://kworb.net/spotify/country/br_weekly_totals.html"
+    display_name: "Brazil"
+  global:
+    url: "https://kworb.net/spotify/country/global_weekly_totals.html"
+    display_name: "Global"
+  us:
+    url: "https://kworb.net/spotify/country/us_weekly_totals.html"
+    display_name: "United States"
+  uk:
+    url: "https://kworb.net/spotify/country/gb_weekly_totals.html"
+    display_name: "United Kingdom"
+  # Add more regions as needed:
+  # france:
+  #   url: "https://kworb.net/spotify/country/fr_weekly_totals.html"
+  #   display_name: "France"
+
+# Application Settings
+settings:
+  default_playlist_limit: 1000
+  request_timeout: 30  # seconds
+
+# Cache Configuration
+cache:
+  enabled: true
+  ttl_hours: 24
+  playlist_cache_file: ".spotichart/cache/playlists.json"
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
+  log_file: "logs/spotichart.log"

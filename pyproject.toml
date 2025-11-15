@@ -24,7 +24,6 @@ classifiers = [
 keywords = ["spotify", "playlist", "kworb", "music", "charts"]
 requires-python = ">=3.8"
 dependencies = [
-    "Flask>=3.0.2",
     "requests>=2.31.0",
     "beautifulsoup4>=4.12.3",
     "spotipy>=2.23.0",
