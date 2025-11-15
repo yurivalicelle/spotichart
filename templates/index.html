@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Playlist Manager - Kworb Charts</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #1DB954;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .welcome-section h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .welcome-section p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #1DB954 0%, #1ed760 100%);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(29, 185, 84, 0.3);
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(29, 185, 84, 0.4);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button-secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .button-secondary:hover {
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        form {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        form h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1em;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #1DB954;
+        }
+
+        .kworb-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .kworb-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+        }
+
+        .kworb-section h3::before {
+            content: "🎵";
+            margin-right: 10px;
+            font-size: 1.3em;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .feature-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            color: #555;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            color: #1DB954;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            .logo h1 {
+                font-size: 1.5em;
+            }
+
+            .button {
+                padding: 12px 24px;
+                font-size: 0.95em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>🎧 Spotify Playlist Manager</h1>
+            <p>Powered by Kworb Charts</p>
+        </div>
+
+        {% if not logged_in %}
+            <div class="welcome-section">
+                <h2>Welcome!</h2>
+                <p>Create amazing Spotify playlists from the latest music charts</p>
+            </div>
+
+            <div class="feature-list">
+                <ul>
+                    <li>Automatic playlist creation from Kworb charts</li>
+                    <li>Support for Brazil and Global top charts</li>
+                    <li>Up to 1000 tracks per playlist</li>
+                    <li>Private playlists in your Spotify account</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="/login" class="button">Connect with Spotify</a>
+            </div>
+        {% else %}
+            <div class="welcome-section">
+                <h2>Welcome back! 👋</h2>
+                <p>Ready to create some awesome playlists?</p>
+            </div>
+
+            <form action="/create_playlist" method="post">
+                <h3>Create Custom Playlist</h3>
+                <input type="text" name="playlist_name" placeholder="Enter playlist name..." required>
+                <div style="text-align: center;">
+                    <button type="submit" class="button">Create Playlist</button>
+                </div>
+            </form>
+
+            <div class="kworb-section">
+                <h3>Import from Kworb Charts</h3>
+                <p style="color: #666; margin-bottom: 15px; font-size: 0.9em;">
+                    Instantly create playlists with the hottest tracks
+                </p>
+                <div class="button-group">
+                    <a href="/import_kworb?region=brazil" class="button">🇧🇷 Top 500 Brazil</a>
+                    <a href="/import_kworb?region=global" class="button button-secondary">🌍 Top 500 Global</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

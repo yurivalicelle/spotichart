@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(spotify-playlist config:*)",
+      "Bash(python -m py_compile:*)",
+      "Bash(spotify-playlist regions:*)",
+      "Bash(spotify-playlist preview:*)",
+      "Bash(spotify-playlist create:*)",
+      "Bash(spotify-playlist list-playlists:*)",
+      "Bash(python -m pytest:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

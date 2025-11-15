@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  spotify-playlist:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: spotify-playlist-creator:latest
+    container_name: spotify-playlist-creator
+    env_file:
+      - .env
+    volumes:
+      # Mount logs directory
+      - ./logs:/app/logs
+      # Mount cache directory for Spotify auth
+      - ./cache:/app/.cache
+      # Optional: mount for local development
+      # - ./src:/app/src
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - PYTHONPATH=/app/src
+    networks:
+      - spotify-network
+    restart: unless-stopped
+    command: config  # Default command, override as needed
+
+networks:
+  spotify-network:
+    driver: bridge
+
+volumes:
+  logs:
+  cache:

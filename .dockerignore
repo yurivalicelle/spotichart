@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+
+# Git
+.git/
+.gitignore
+.github/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Tests
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+logs/
+*.log
+
+# Cache
+.cache/
+.spotify_cache
+*.cache
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Development
+Makefile
+docker-compose.dev.yml
+.pre-commit-config.yaml
+
+# CI/CD
+.github/
+.gitlab-ci.yml
