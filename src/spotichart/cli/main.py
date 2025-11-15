@@ -333,12 +333,12 @@ def config(ctx):
 
     table.add_row(
         "Spotify Client ID",
-        f"{'***' + os.getenv("SPOTIFY_CLIENT_ID", "")[-4:] if os.getenv("SPOTIFY_CLIENT_ID", "") else 'Not set'}",
+        f"{'***' + os.getenv('SPOTIFY_CLIENT_ID', '')[-4:] if os.getenv('SPOTIFY_CLIENT_ID', '') else 'Not set'}",
         client_id_status
     )
     table.add_row(
         "Spotify Client Secret",
-        f"{'***' + os.getenv("SPOTIFY_CLIENT_SECRET", "")[-4:] if os.getenv("SPOTIFY_CLIENT_SECRET", "") else 'Not set'}",
+        f"{'***' + os.getenv('SPOTIFY_CLIENT_SECRET', '')[-4:] if os.getenv('SPOTIFY_CLIENT_SECRET', '') else 'Not set'}",
         client_secret_status
     )
     table.add_row("Redirect URI", os.getenv("REDIRECT_URI", "http://localhost:8888/callback"), "✓")
