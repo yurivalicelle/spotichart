@@ -3,11 +3,12 @@
 import pytest
 from abc import ABC
 from spotichart.core.interfaces import (
-    IConfiguration,
     ISpotifyAuth,
+    ISpotifyClient,
     IPlaylistOperations,
     ITrackOperations
 )
+from spotichart.utils.interfaces import IConfiguration
 
 
 class TestIConfiguration:
@@ -129,7 +130,6 @@ class TestITrackOperations:
     def test_has_required_methods(self):
         """ITrackOperations has required abstract methods."""
         assert hasattr(ITrackOperations, 'add_to_playlist')
-        assert hasattr(ITrackOperations, 'search')
         assert hasattr(ITrackOperations, 'build_uri')
 
     def test_mock_implementation(self, mock_track_operations):

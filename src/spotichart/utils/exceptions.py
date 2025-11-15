@@ -33,3 +33,8 @@ class ConfigurationError(SpotichartError):
 class ValidationError(SpotichartError):
     """Raised when input validation fails."""
     pass
+
+
+class TrackAdditionError(SpotichartError):
+    """Raised when adding tracks to a playlist fails."""
+    pass

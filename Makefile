@@ -51,16 +51,16 @@ setup:
 	@echo "Then run: make install-dev"
 
 run:
-	spotify-playlist --help
+	spotichart --help
 
 run-brazil:
-	spotify-playlist create --region brazil --limit 500
+	spotichart create --region brazil --limit 500
 
 run-global:
-	spotify-playlist create --region global --limit 500
+	spotichart create --region global --limit 500
 
 preview:
-	spotify-playlist preview --region brazil --limit 20
+	spotichart preview --region brazil --limit 20
 
 test:
 	pytest tests/ -v
@@ -69,14 +69,14 @@ test-verbose:
 	pytest tests/ -vv -s
 
 coverage:
-	pytest tests/ --cov=spotify_playlist_creator --cov-report=html --cov-report=term
+	pytest tests/ --cov=spotichart --cov-report=html --cov-report=term
 	@echo "📊 Coverage report generated in htmlcov/index.html"
 
 lint:
 	@echo "🔍 Running flake8..."
 	flake8 src/ --max-line-length=100 --statistics
 	@echo "🔍 Running pylint..."
-	pylint src/spotify_playlist_creator --fail-under=8.0
+	pylint src/spotichart --fail-under=8.0
 
 format:
 	@echo "🎨 Formatting code..."
@@ -104,7 +104,7 @@ docker-build:
 	@echo "✓ Docker image built"
 
 docker-run:
-	docker-compose run --rm spotify-playlist config
+	docker-compose run --rm spotichart config
 
 docker-clean:
 	@echo "🧹 Cleaning Docker resources..."

@@ -4,21 +4,26 @@ Command-Line Interface
 Provides a robust CLI for the Spotichart using Click.
 """
 
+import os
 import sys
 import click
+from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn
-from ..config import Config
 from ..core import SpotifyServiceFactory, KworbScraper
 from ..utils.logger import setup_logging
 from ..utils.exceptions import SpotichartError
+from ..utils.configuration_provider import ConfigurationProvider
 
 console = Console()
 
+# Initialize configuration provider
+config = ConfigurationProvider()
+
 
 @click.group()
-@click.version_option(version=Config.APP_VERSION, prog_name=Config.APP_NAME)
+@click.version_option(version="2.0.0", prog_name="Spotichart")
 @click.option('--debug', is_flag=True, help='Enable debug logging')
 @click.pass_context
 def cli(ctx, debug):
@@ -29,7 +34,7 @@ def cli(ctx, debug):
     based on the latest music charts from Kworb.net.
     """
     ctx.ensure_object(dict)
-    log_level = 'DEBUG' if debug else Config.LOG_LEVEL
+    log_level = 'DEBUG' if debug else os.getenv('LOG_LEVEL', 'INFO')
     ctx.obj['logger'] = setup_logging(log_level=log_level)
 
 
@@ -37,7 +42,7 @@ def cli(ctx, debug):
 @click.option(
     '--region',
     '-r',
-    type=click.Choice(Config.get_available_regions(), case_sensitive=False),
+    type=click.Choice(config.get_available_regions(), case_sensitive=False),
     default='brazil',
     help='Chart region to scrape'
 )
@@ -45,8 +50,8 @@ def cli(ctx, debug):
     '--limit',
     '-l',
     type=int,
-    default=Config.DEFAULT_PLAYLIST_LIMIT,
-    help=f'Number of tracks to include (default: {Config.DEFAULT_PLAYLIST_LIMIT})'
+    default=int(os.getenv('PLAYLIST_LIMIT', '1000')),
+    help=f'Number of tracks to include (default: {os.getenv("PLAYLIST_LIMIT", "1000")})'
 )
 @click.option(
     '--name',
@@ -86,7 +91,7 @@ def create(ctx, region, limit, name, public, update_mode):
 
     try:
         # Validate configuration
-        if not Config.validate():
+        if not config.validate():
             console.print("[red]Error: Missing Spotify API credentials![/red]")
             console.print("Please set SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET in your .env file")
             console.print("See .env.example for reference")
@@ -181,7 +186,7 @@ def create(ctx, region, limit, name, public, update_mode):
 @click.option(
     '--region',
     '-r',
-    type=click.Choice(Config.get_available_regions(), case_sensitive=False),
+    type=click.Choice(config.get_available_regions(), case_sensitive=False),
     required=True,
     help='Chart region to preview'
 )
@@ -245,8 +250,8 @@ def regions():
     table.add_column("Region", style="cyan")
     table.add_column("URL", style="magenta")
 
-    for region in Config.get_available_regions():
-        url = Config.get_kworb_url(region)
+    for region in config.get_available_regions():
+        url = config.get_kworb_url(region)
         table.add_row(region.capitalize(), url)
 
     console.print(table)
@@ -266,7 +271,7 @@ def list_playlists(ctx, limit):
     logger = ctx.obj['logger']
 
     try:
-        if not Config.validate():
+        if not config.validate():
             console.print("[red]Error: Missing Spotify API credentials![/red]")
             sys.exit(1)
 
@@ -323,27 +328,27 @@ def config(ctx):
     table.add_column("Status", style="yellow")
 
     # Check credentials
-    client_id_status = "✓" if Config.SPOTIFY_CLIENT_ID else "✗"
-    client_secret_status = "✓" if Config.SPOTIFY_CLIENT_SECRET else "✗"
+    client_id_status = "✓" if os.getenv("SPOTIFY_CLIENT_ID", "") else "✗"
+    client_secret_status = "✓" if os.getenv("SPOTIFY_CLIENT_SECRET", "") else "✗"
 
     table.add_row(
         "Spotify Client ID",
-        f"{'***' + Config.SPOTIFY_CLIENT_ID[-4:] if Config.SPOTIFY_CLIENT_ID else 'Not set'}",
+        f"{'***' + os.getenv("SPOTIFY_CLIENT_ID", "")[-4:] if os.getenv("SPOTIFY_CLIENT_ID", "") else 'Not set'}",
         client_id_status
     )
     table.add_row(
         "Spotify Client Secret",
-        f"{'***' + Config.SPOTIFY_CLIENT_SECRET[-4:] if Config.SPOTIFY_CLIENT_SECRET else 'Not set'}",
+        f"{'***' + os.getenv("SPOTIFY_CLIENT_SECRET", "")[-4:] if os.getenv("SPOTIFY_CLIENT_SECRET", "") else 'Not set'}",
         client_secret_status
     )
-    table.add_row("Redirect URI", Config.REDIRECT_URI, "✓")
-    table.add_row("Default Limit", str(Config.DEFAULT_PLAYLIST_LIMIT), "✓")
-    table.add_row("Log Level", Config.LOG_LEVEL, "✓")
-    table.add_row("Log File", Config.LOG_FILE, "✓")
+    table.add_row("Redirect URI", os.getenv("REDIRECT_URI", "http://localhost:8888/callback"), "✓")
+    table.add_row("Default Limit", str(int(os.getenv("PLAYLIST_LIMIT", "1000"))), "✓")
+    table.add_row("Log Level", os.getenv("LOG_LEVEL", "INFO"), "✓")
+    table.add_row("Log File", str(Path(__file__).parent.parent.parent / "logs" / "spotichart.log"), "✓")
 
     console.print(table)
 
-    if Config.validate():
+    if config.validate():
         console.print("\n[green]Configuration is valid![/green]")
     else:
         console.print("\n[red]Configuration is incomplete![/red]")
