@@ -95,11 +95,10 @@ class CachedPlaylistRepository(IPlaylistRepository):
     def find_by_name(self, name: str) -> Optional[Dict]:
         """Find playlist by name with caching."""
         # Check cache first
-        cached = self._cache.get_playlist_id(name)
+        cached = self._cache.get(name)
         if cached:
             logger.debug(f"Cache hit for playlist: {name}")
-            # Return minimal dict with cached data
-            return {"id": cached, "name": name}
+            return cached
 
         # Cache miss - fetch all playlists
         logger.debug(f"Cache miss for playlist: {name}")
@@ -109,7 +108,7 @@ class CachedPlaylistRepository(IPlaylistRepository):
         for playlist in all_playlists:
             if playlist["name"] == name:
                 # Update cache
-                self._cache.save_playlist(name, playlist["id"])
+                self._cache.set(name, playlist)
                 return playlist
 
         return None
@@ -133,11 +132,10 @@ class CachedPlaylistRepository(IPlaylistRepository):
     def save(self, playlist: Dict) -> None:
         """Save playlist to cache."""
         name = playlist.get("name")
-        playlist_id = playlist.get("id")
 
-        if name and playlist_id:
-            self._cache.save_playlist(name, playlist_id)
-            logger.debug(f"Cached playlist: {name} -> {playlist_id}")
+        if name:
+            self._cache.set(name, playlist)
+            logger.debug(f"Cached playlist: {name}")
 
         # Invalidate all playlists cache
         self._all_playlists_cache = None
@@ -166,12 +164,11 @@ class CachedPlaylistRepository(IPlaylistRepository):
         # Cache the results
         self._all_playlists_cache = playlists
 
-        # Also cache individual playlist names
+        # Also cache individual playlists
         for playlist in playlists:
             name = playlist.get("name")
-            playlist_id = playlist.get("id")
-            if name and playlist_id:
-                self._cache.save_playlist(name, playlist_id)
+            if name:
+                self._cache.set(name, playlist)
 
         return playlists[:limit]
 
