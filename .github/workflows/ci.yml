@@ -48,7 +48,7 @@ jobs:
 
     - name: Run tests with pytest
       run: |
-        pytest tests/ -v --cov=spotify_playlist_creator --cov-report=xml --cov-report=term
+        pytest tests/ -v --cov=spotichart --cov-report=xml --cov-report=term
 
     - name: Upload coverage to Codecov
       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
@@ -79,7 +79,7 @@ jobs:
 
     - name: Lint with pylint
       run: |
-        pylint src/spotify_playlist_creator --fail-under=8.0
+        pylint src/spotichart --fail-under=8.0
       continue-on-error: true
 
     - name: Check import sorting
