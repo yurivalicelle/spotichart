@@ -6,8 +6,10 @@ Follows Dependency Inversion Principle by depending on abstractions.
 """
 
 import logging
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
+
 import spotipy
+
 from .interfaces import ISpotifyClient
 from .spotify_authenticator import SpotifyAuthenticator
 

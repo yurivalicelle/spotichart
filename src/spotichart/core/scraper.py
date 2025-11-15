@@ -6,12 +6,14 @@ Handles scraping of music charts from Kworb.net.
 
 import logging
 import os
-from typing import List, Dict, Optional
 import time
+from typing import Dict, List, Optional
+
 import requests
 from bs4 import BeautifulSoup
-from ..utils.exceptions import ScrapingError
+
 from ..utils.configuration_provider import ConfigurationProvider
+from ..utils.exceptions import ScrapingError
 
 logger = logging.getLogger(__name__)
 

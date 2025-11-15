@@ -1,11 +1,11 @@
 from .exceptions import (
-    SpotichartError,
-    SpotifyAuthError,
+    ConfigurationError,
     PlaylistCreationError,
     ScrapingError,
-    ConfigurationError,
-    ValidationError,
+    SpotichartError,
+    SpotifyAuthError,
     TrackAdditionError,
+    ValidationError,
 )
 from .logger import setup_logging
 

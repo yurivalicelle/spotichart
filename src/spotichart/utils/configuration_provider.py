@@ -4,8 +4,8 @@ Configuration Provider Module
 Provides configuration from YAML file following Dependency Inversion Principle.
 """
 
-import os
 import logging
+import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -14,8 +14,9 @@ try:
 except ImportError:
     yaml = None
 from dotenv import load_dotenv
-from .interfaces import IConfiguration
+
 from .exceptions import ConfigurationError
+from .interfaces import IConfiguration
 
 logger = logging.getLogger(__name__)
 

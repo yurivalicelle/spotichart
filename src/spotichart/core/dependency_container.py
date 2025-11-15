@@ -8,15 +8,16 @@ Centralizes object creation and wiring.
 import logging
 from pathlib import Path
 from typing import Optional
-from .interfaces import ISpotifyClient, IPlaylistOperations, ITrackOperations
+
+from ..utils.configuration_provider import ConfigurationProvider
+from ..utils.interfaces import IConfiguration
+from .interfaces import IPlaylistOperations, ISpotifyClient, ITrackOperations
+from .playlist_cache import PlaylistCache
+from .playlist_manager import PlaylistManager
 from .spotify_authenticator import SpotifyAuthenticator
 from .spotify_client import SpotifyClient
-from .playlist_manager import PlaylistManager
-from .track_manager import TrackManager
-from .playlist_cache import PlaylistCache
 from .spotify_service import SpotifyService
-from ..utils.interfaces import IConfiguration
-from ..utils.configuration_provider import ConfigurationProvider
+from .track_manager import TrackManager
 
 logger = logging.getLogger(__name__)
 

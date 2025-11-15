@@ -5,10 +5,12 @@ Handles Spotify API authentication following Single Responsibility Principle.
 """
 
 import logging
-from typing import Optional
 from pathlib import Path
+from typing import Optional
+
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+
 from ..utils.exceptions import SpotifyAuthError
 
 logger = logging.getLogger(__name__)

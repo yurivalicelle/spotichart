@@ -7,9 +7,10 @@ Follows SOLID principles with dependency injection.
 
 import logging
 from typing import Optional
+
+from ..utils.interfaces import IConfiguration
 from .dependency_container import DependencyContainer
 from .spotify_service import SpotifyService
-from ..utils.interfaces import IConfiguration
 
 logger = logging.getLogger(__name__)
 

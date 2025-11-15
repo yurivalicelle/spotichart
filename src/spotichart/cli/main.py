@@ -6,15 +6,17 @@ Provides a robust CLI for the Spotichart using Click.
 
 import os
 import sys
-import click
 from pathlib import Path
+
+import click
 from rich.console import Console
-from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn
-from ..core import SpotifyServiceFactory, KworbScraper
-from ..utils.logger import setup_logging
-from ..utils.exceptions import SpotichartError
+from rich.table import Table
+
+from ..core import KworbScraper, SpotifyServiceFactory
 from ..utils.configuration_provider import ConfigurationProvider
+from ..utils.exceptions import SpotichartError
+from ..utils.logger import setup_logging
 
 console = Console()
 
