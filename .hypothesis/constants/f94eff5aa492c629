@@ -1,0 +1,4 @@
+# file: /Users/yurivalicelle/Documents/GitHub/spotichart/src/spotichart/infrastructure/decorators.py
+# hypothesis_version: 6.141.1
+
+[0.0, 1.0, 2.0, 10.0, 300.0, 'Cache invalidated', 'Clear playlist', 'Create playlist', 'Get all playlists', 'T', 'average_duration', 'calls', 'clear', 'create', 'failures', 'find_by_name', 'get_all', 'success_rate', 'successes', 'total_duration', 'update_details']

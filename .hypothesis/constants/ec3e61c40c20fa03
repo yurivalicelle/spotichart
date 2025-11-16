@@ -1,0 +1,4 @@
+# file: /Users/yurivalicelle/Documents/GitHub/spotichart/src/spotichart/domain/builders.py
+# hypothesis_version: 6.141.1
+
+['PlaylistBuilder', 'replace']

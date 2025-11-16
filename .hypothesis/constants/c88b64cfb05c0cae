@@ -1,0 +1,4 @@
+# file: /Users/yurivalicelle/Documents/GitHub/spotichart/src/spotichart/core/dependency_container.py
+# hypothesis_version: 6.141.1
+
+['.spotichart', 'REDIRECT_URI', 'SPOTIFY_CLIENT_ID', 'cache', 'cache.enabled', 'cache.ttl_hours', 'spotify.scope', 'spotify_token.cache']

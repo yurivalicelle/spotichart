@@ -1,0 +1,4 @@
+# file: /Users/yurivalicelle/Documents/GitHub/spotichart/src/spotichart/application/handlers.py
+# hypothesis_version: 6.141.1
+
+[100, '-', 'CreatePlaylist', 'append', 'description', 'external_urls', 'id', 'name', 'new', 'public', 'replace', 'spotify', 'total', 'tracks']

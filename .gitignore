@@ -77,4 +77,4 @@ wheels/
 docker-compose.override.yml
 
 # AI
-.claude/
+.claude/.hypothesis/

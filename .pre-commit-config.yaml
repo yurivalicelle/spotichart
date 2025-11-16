@@ -80,6 +80,28 @@ repos:
       - id: pretty-format-yaml
         args: ['--autofix', '--indent', '2']
 
+  # 🚀 ELITE: Property-based testing
+  - repo: local
+    hooks:
+      - id: hypothesis-quick
+        name: hypothesis-property-tests
+        entry: pytest
+        language: system
+        args: ['tests/test_property_based.py', '-v', '--tb=short']
+        pass_filenames: false
+        stages: [push]  # Only on push, not commit
+
+  # 🚀 ELITE: Coverage check (must maintain 95%+)
+  - repo: local
+    hooks:
+      - id: coverage-gate
+        name: coverage-minimum-95%
+        entry: pytest
+        language: system
+        args: ['--cov=spotichart', '--cov-fail-under=95', '--cov-report=term-missing:skip-covered', '-q']
+        pass_filenames: false
+        stages: [push]  # Only on push
+
 # Configuration
 ci:
   autofix_commit_msg: |

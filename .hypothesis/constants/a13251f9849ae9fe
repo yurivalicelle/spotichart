@@ -1,0 +1,4 @@
+# file: /Users/yurivalicelle/Documents/GitHub/spotichart/src/spotichart/utils/configuration_provider.py
+# hypothesis_version: 6.141.1
+
+[100, 1000, 10485760, '.', '.env', '2.0.0', 'Brazil', 'Global', 'INFO', 'SPOTIFY_CLIENT_ID', 'Spotichart', '_', 'app', 'backup_count', 'batch_size', 'brazil', 'cache', 'config.yaml', 'display_name', 'enabled', 'format', 'global', 'kworb_urls', 'level', 'log_file', 'logging', 'logs/spotichart.log', 'max_bytes', 'max_retries', 'name', 'r', 'request_timeout', 'retry_delay', 'scope', 'settings', 'spotify', 'spotify.scope', 'ttl_hours', 'url', 'version']

@@ -1,0 +1,4 @@
+# file: /Users/yurivalicelle/Documents/GitHub/spotichart/src/spotichart/domain/pipelines.py
+# hypothesis_version: 6.141.1
+
+['Pipeline[T]', 'T', 'album', 'artists', 'name']

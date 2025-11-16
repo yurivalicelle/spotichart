@@ -1,0 +1,4 @@
+# file: /Users/yurivalicelle/Documents/GitHub/spotichart/src/spotichart/core/repositories.py
+# hypothesis_version: 6.141.1
+
+['id', 'items', 'name', 'next']
