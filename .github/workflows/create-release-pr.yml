@@ -54,5 +54,9 @@ jobs:
           source_branch: "release/${{ steps.version.outputs.next_version }}"
           destination_branch: "main"
           pr_title: "chore(release): PR from release/${{ steps.version.outputs.next_version }} to main"
-          pr_body: "Automated release PR for version ${{ steps.version.outputs.next_version }}."
+          pr_body: |
+            This is an automated release pull request for version **${{ steps.version.outputs.next_version }}**.
+
+            - **From**: `release/${{ steps.version.outputs.next_version }}`
+            - **To**: `main`
           github_token: ${{ secrets.GITHUB_TOKEN }}
