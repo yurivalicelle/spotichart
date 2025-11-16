@@ -13,9 +13,10 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch all history for all tags and branches
+          fetch-depth: 0 # Needed to get all history
+          fetch-tags: true # Correctly fetches all tags
 
       - name: Configure Git
         run: |
@@ -25,13 +26,20 @@ jobs:
       - name: Get next version
         id: version
         run: |
-          git fetch --tags
+          # Get the latest tag that matches vX.Y.Z format
           LATEST_TAG=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
+
           if [ -z "$LATEST_TAG" ]; then
+            echo "No valid semantic version tag found. Defaulting to v0.1.0."
             NEXT_VERSION="v0.1.0"
           else
-            # Bump patch version
-            NEXT_VERSION=$(echo $LATEST_TAG | awk -F. -v OFS=. '{$3++;print}')
+            echo "Latest tag found: $LATEST_TAG"
+            # Strip 'v' prefix for calculation
+            VERSION_CORE=$(echo $LATEST_TAG | sed 's/^v//')
+            # Bump patch version using awk
+            BUMPED_VERSION_CORE=$(echo $VERSION_CORE | awk -F. -v OFS=. '{$3++;print}')
+            NEXT_VERSION="v$BUMPED_VERSION_CORE"
+            echo "Calculated next version: $NEXT_VERSION"
           fi
           echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
 
