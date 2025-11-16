@@ -10,7 +10,6 @@ from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-
 # ============================================================================
 # REQUEST DTOs (with validation)
 # ============================================================================
