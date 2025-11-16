@@ -13,7 +13,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Fetch all history for all branches
 
@@ -25,6 +25,6 @@ jobs:
         with:
           source_branch: "" # Defaults to the branch that triggered the workflow
           destination_branch: "develop"
-          pr_title: "PR from ${{ github.ref_name }}"
+          pr_title: "feat: PR from ${{ github.ref_name }} to develop"
           pr_body: "Automated PR from feature branch."
           github_token: ${{ secrets.GITHUB_TOKEN }}
