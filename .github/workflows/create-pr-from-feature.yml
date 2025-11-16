@@ -26,5 +26,9 @@ jobs:
           source_branch: "" # Defaults to the branch that triggered the workflow
           destination_branch: "develop"
           pr_title: "feat: PR from ${{ github.ref_name }} to develop"
-          pr_body: "Automated PR from feature branch."
+          pr_body: |
+            This is an automated pull request.
+
+            - **From**: `${{ github.ref_name }}`
+            - **To**: `develop`
           github_token: ${{ secrets.GITHUB_TOKEN }}
