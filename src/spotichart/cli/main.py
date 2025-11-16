@@ -326,7 +326,10 @@ def config(ctx):
 
     console.print(table)
 
-    if config.validate():
+    # Validate configuration
+    is_valid = os.getenv("SPOTIFY_CLIENT_ID", "") and os.getenv("SPOTIFY_CLIENT_SECRET", "")
+
+    if is_valid:
         console.print("\n[green]Configuration is valid![/green]")
     else:
         console.print("\n[red]Configuration is incomplete![/red]")
