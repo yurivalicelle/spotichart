@@ -58,23 +58,10 @@ jobs:
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
+          TWINE_REPOSITORY_URL: https://pypi.pkg.github.com/yurivalicelle/spotichart/
         run: |
           echo "📤 Publishing to GitHub Packages..."
-          # Configure for GitHub Packages
-          cat > ~/.pypirc << EOF
-          [distutils]
-          index-servers =
-              github
-
-          [github]
-          repository = https://maven.pkg.github.com/yurivalicelle/spotichart
-          username = yurivalicelle
-          password = ${{ secrets.GITHUB_TOKEN }}
-          EOF
-
-          # Publish using twine
-          twine upload --repository github dist/* --verbose
+          twine upload dist/* --verbose
           echo "✅ Published successfully!"
 
       - name: Create release artifact
@@ -94,5 +81,5 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Installation" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
-          echo "pip install spotichart --index-url https://maven.pkg.github.com/yurivalicelle/spotichart" >> $GITHUB_STEP_SUMMARY
+          echo "pip install spotichart --index-url https://pypi.pkg.github.com/yurivalicelle/spotichart/simple" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
