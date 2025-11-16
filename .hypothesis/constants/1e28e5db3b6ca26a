@@ -1,4 +1,0 @@
-# file: /Users/yurivalicelle/Documents/GitHub/spotichart/src/spotichart/application/events.py
-# hypothesis_version: 6.141.1
-
-['kworb', 'playlists_created', 'playlists_updated', 'scrapes_completed', 'tracks_added', 'validation_failures']

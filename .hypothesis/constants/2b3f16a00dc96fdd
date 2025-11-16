@@ -1,4 +1,0 @@
-# file: /Users/yurivalicelle/Documents/GitHub/spotichart/src/spotichart/application/pydantic_dtos.py
-# hypothesis_version: 6.141.1
-
-[100, 200, 300, 1000, 3600, 10000, 'Album Title', 'Album name', 'Artist Name', 'Artist name', 'Enable caching', 'INFO', 'Logging level', 'Name of the playlist', 'OAuth redirect URI', 'Playlist description', 'Rock Classics', 'Search term', 'Song Title', 'Spotify Client ID', 'Spotify playlist ID', 'Spotify track ID', 'Top Brazil 2024', 'Track name', '^https?://.*', 'abc123', 'after', 'append', 'brazil', 'client_id', 'client_secret', 'forbid', 'global', 'name', 'new', 'region', 'replace', 'rock', 'search_term', 'track_ids', 'update_mode', 'us', 'your_client_id_here']

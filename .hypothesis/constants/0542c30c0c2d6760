@@ -1,4 +1,0 @@
-# file: /Users/yurivalicelle/Documents/GitHub/spotichart/src/spotichart/domain/decorators.py
-# hypothesis_version: 6.141.1
-
-[1.0, 300, 'Cache invalidated', 'clear', 'clears', 'create', 'creates', 'errors', 'find_by_name', 'finds', 'get_all', 'get_alls', 'update_details', 'updates']

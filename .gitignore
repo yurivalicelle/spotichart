@@ -78,3 +78,4 @@ docker-compose.override.yml
 
 # AI
 .claude/.hypothesis/
+.hypothesis/

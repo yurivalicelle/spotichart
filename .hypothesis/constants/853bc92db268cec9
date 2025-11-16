@@ -1,4 +1,0 @@
-# file: /Users/yurivalicelle/Documents/GitHub/spotichart/src/spotichart/core/scraper.py
-# hypothesis_version: 6.141.1
-
-[1000, '../track', '../track/', '.html', '30', 'REQUEST_TIMEOUT', 'Table body not found', 'User-Agent', 'a', 'addpos', 'brazil', 'chart', 'class', 'data', 'display', 'href', 'html.parser', 'id', 'spotifyweekly', 'table', 'tbody', 'tr', 'track', 'utf-8']

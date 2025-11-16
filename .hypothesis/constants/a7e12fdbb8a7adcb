@@ -1,4 +1,0 @@
-# file: /Users/yurivalicelle/Documents/GitHub/spotichart/src/spotichart/application/query_handlers.py
-# hypothesis_version: 6.141.1
-
-[100, 60000, '-', 'album', 'artists', 'average_duration_ms', 'description', 'duration_ms', 'explicit', 'explicit_tracks', 'external_urls', 'id', 'items', 'name', 'public', 'spotify', 'total', 'total_duration_ms', 'total_tracks', 'track', 'tracks', 'unique_artists']
