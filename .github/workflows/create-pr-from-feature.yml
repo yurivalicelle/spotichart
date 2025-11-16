@@ -14,6 +14,9 @@ jobs:
         with:
           fetch-depth: 0 # Fetch all history for all branches
 
+      - name: Create local 'develop' branch
+        run: git branch develop origin/develop
+
       - name: Create Pull Request
         uses: repo-sync/pull-request@v2
         with:
