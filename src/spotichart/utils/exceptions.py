@@ -51,3 +51,9 @@ class TrackAdditionError(SpotichartError):
     """Raised when adding tracks to a playlist fails."""
 
     pass
+
+
+class PlaylistNotFoundError(SpotichartError):
+    """Raised when a playlist is not found."""
+
+    pass
