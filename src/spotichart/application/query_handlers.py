@@ -295,9 +295,7 @@ class GetPlaylistStatisticsQueryHandler(IQueryHandler[Dict, Exception]):
 
             # Calculate statistics
             total_tracks = len(items)
-            total_duration_ms = sum(
-                item.get("track", {}).get("duration_ms", 0) for item in items
-            )
+            total_duration_ms = sum(item.get("track", {}).get("duration_ms", 0) for item in items)
             explicit_count = sum(
                 1 for item in items if item.get("track", {}).get("explicit", False)
             )

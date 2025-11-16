@@ -150,21 +150,33 @@ class CreatePlaylistResponseV2(BaseModel):
     """Enhanced playlist creation response."""
 
     playlist_url: str = Field(
-        ..., description="Spotify URL of the created playlist", examples=["https://open.spotify.com/playlist/abc123"]
+        ...,
+        description="Spotify URL of the created playlist",
+        examples=["https://open.spotify.com/playlist/abc123"],
     )
 
     playlist_id: str = Field(..., description="Spotify playlist ID", examples=["abc123"])
 
-    playlist_name: str = Field(..., description="Name of the playlist", examples=["Top Brazil 2024"])
+    playlist_name: str = Field(
+        ..., description="Name of the playlist", examples=["Top Brazil 2024"]
+    )
 
-    tracks_added: int = Field(..., ge=0, description="Number of tracks successfully added", examples=[50])
+    tracks_added: int = Field(
+        ..., ge=0, description="Number of tracks successfully added", examples=[50]
+    )
 
-    tracks_failed: int = Field(..., ge=0, description="Number of tracks that failed to add", examples=[0])
+    tracks_failed: int = Field(
+        ..., ge=0, description="Number of tracks that failed to add", examples=[0]
+    )
 
-    was_updated: bool = Field(..., description="Whether an existing playlist was updated", examples=[False, True])
+    was_updated: bool = Field(
+        ..., description="Whether an existing playlist was updated", examples=[False, True]
+    )
 
     errors: List[str] = Field(
-        default_factory=list, description="List of error messages", examples=[[], ["Failed to add track xyz"]]
+        default_factory=list,
+        description="List of error messages",
+        examples=[[], ["Failed to add track xyz"]],
     )
 
     created_at: datetime = Field(
@@ -202,7 +214,9 @@ class PlaylistStatisticsV2(BaseModel):
 
     unique_artists: int = Field(..., ge=0, description="Number of unique artists")
 
-    average_duration_ms: int = Field(..., ge=0, description="Average track duration in milliseconds")
+    average_duration_ms: int = Field(
+        ..., ge=0, description="Average track duration in milliseconds"
+    )
 
     @model_validator(mode="after")
     def validate_statistics(self):
@@ -221,7 +235,9 @@ class PlaylistStatisticsV2(BaseModel):
 class TrackV2(BaseModel):
     """Enhanced Track model with Pydantic validation."""
 
-    id: str = Field(..., min_length=1, description="Spotify track ID", examples=["7ouMYWpwJ422jRcDASZB7P"])
+    id: str = Field(
+        ..., min_length=1, description="Spotify track ID", examples=["7ouMYWpwJ422jRcDASZB7P"]
+    )
 
     name: Optional[str] = Field(None, description="Track name", examples=["Song Title"])
 
@@ -260,7 +276,9 @@ class TrackV2(BaseModel):
 class SearchPlaylistsRequestV2(BaseModel):
     """Search playlists request with validation."""
 
-    search_term: str = Field(..., min_length=1, description="Search term", examples=["rock", "brazil"])
+    search_term: str = Field(
+        ..., min_length=1, description="Search term", examples=["rock", "brazil"]
+    )
 
     limit: int = Field(default=20, ge=1, le=100, description="Maximum results to return")
 
@@ -290,7 +308,9 @@ class SpotifyCredentialsV2(BaseModel):
 
     client_id: str = Field(..., min_length=32, max_length=32, description="Spotify Client ID")
 
-    client_secret: str = Field(..., min_length=32, max_length=32, description="Spotify Client Secret")
+    client_secret: str = Field(
+        ..., min_length=32, max_length=32, description="Spotify Client Secret"
+    )
 
     redirect_uri: str = Field(
         default="http://localhost:8888/callback",
@@ -324,7 +344,9 @@ class ApplicationConfigV2(BaseModel):
 
     max_retries: int = Field(default=3, ge=0, le=10, description="Maximum retry attempts")
 
-    request_timeout: int = Field(default=30, ge=1, le=300, description="HTTP request timeout in seconds")
+    request_timeout: int = Field(
+        default=30, ge=1, le=300, description="HTTP request timeout in seconds"
+    )
 
     enable_metrics: bool = Field(default=True, description="Enable metrics collection")
 

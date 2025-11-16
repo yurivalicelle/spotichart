@@ -183,9 +183,7 @@ class RetryPlaylistOperationsDecorator(IPlaylistOperations):
                     )
                     time.sleep(delay)
                 else:
-                    logger.error(
-                        f"{operation_name} failed after {self._max_retries} attempts: {e}"
-                    )
+                    logger.error(f"{operation_name} failed after {self._max_retries} attempts: {e}")
 
         raise last_exception  # type: ignore
 
@@ -316,9 +314,7 @@ class MetricsPlaylistOperationsDecorator(IPlaylistOperations):
                 "average_duration": (
                     data["total_duration"] / data["calls"] if data["calls"] > 0 else 0.0
                 ),
-                "success_rate": (
-                    data["successes"] / data["calls"] if data["calls"] > 0 else 0.0
-                ),
+                "success_rate": (data["successes"] / data["calls"] if data["calls"] > 0 else 0.0),
             }
 
         return metrics_with_averages
