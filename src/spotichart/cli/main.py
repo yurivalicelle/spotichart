@@ -84,7 +84,8 @@ def create(ctx, region, limit, name, public, update_mode):
 
     try:
         # Validate configuration
-        if not config.validate():
+        is_valid = os.getenv("SPOTIFY_CLIENT_ID", "") and os.getenv("SPOTIFY_CLIENT_SECRET", "")
+        if not is_valid:
             console.print("[red]Error: Missing Spotify API credentials![/red]")
             console.print(
                 "Please set SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET in your .env file"
@@ -254,7 +255,9 @@ def list_playlists(ctx, limit):
     logger = ctx.obj["logger"]
 
     try:
-        if not config.validate():
+        # Validate configuration
+        is_valid = os.getenv("SPOTIFY_CLIENT_ID", "") and os.getenv("SPOTIFY_CLIENT_SECRET", "")
+        if not is_valid:
             console.print("[red]Error: Missing Spotify API credentials![/red]")
             sys.exit(1)
 
