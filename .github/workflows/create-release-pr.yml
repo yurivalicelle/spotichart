@@ -1,0 +1,47 @@
+name: Create Release PR
+
+on:
+  push:
+    branches:
+    - develop
+
+jobs:
+  create-release-pr:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0   # Fetch all history for all tags and branches
+
+    - name: Configure Git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Get next version
+      id: version
+      run: |
+        git fetch --tags
+        LATEST_TAG=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
+        if [ -z "$LATEST_TAG" ]; then
+          NEXT_VERSION="v0.1.0"
+        else
+          # Bump patch version
+          NEXT_VERSION=$(echo $LATEST_TAG | awk -F. -v OFS=. '{$3++;print}')
+        fi
+        echo "next_version=$NEXT_VERSION" >> $GITHUB_OUTPUT
+
+    - name: Create Release Branch
+      run: |
+        git checkout -b release/${{ steps.version.outputs.next_version }}
+        git push origin release/${{ steps.version.outputs.next_version }}
+
+    - name: Create Pull Request to main
+      uses: repo-sync/pull-request@v2
+      with:
+        source_branch: release/${{ steps.version.outputs.next_version }}
+        destination_branch: main
+        pr_title: Release ${{ steps.version.outputs.next_version }}
+        pr_body: Automated release PR for version ${{ steps.version.outputs.next_version }}.
+        github_token: ${{ secrets.GITHUB_TOKEN }}

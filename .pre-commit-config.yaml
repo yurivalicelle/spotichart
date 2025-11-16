@@ -20,7 +20,6 @@ repos:
     rev: 24.1.1
     hooks:
       - id: black
-        language_version: python3.11
         args: ['--line-length=100']
 
   # Import sorting
@@ -73,12 +72,12 @@ repos:
       - id: hadolint-docker
         args: ['--ignore', 'DL3008', '--ignore', 'DL3013']
 
-  # YAML formatting
-  - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-    rev: v2.12.0
-    hooks:
-      - id: pretty-format-yaml
-        args: ['--autofix', '--indent', '2']
+  # YAML formatting - DISABLED due to incorrect formatting
+  # - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+  #   rev: v2.12.0
+  #   hooks:
+  #     - id: pretty-format-yaml
+  #       args: ['--autofix', '--indent', '2']
 
   # 🚀 ELITE: Property-based testing
   - repo: local
@@ -100,7 +99,7 @@ repos:
         language: system
         args: ['--cov=spotichart', '--cov-fail-under=95', '--cov-report=term-missing:skip-covered', '-q']
         pass_filenames: false
-        stages: [push]  # Only on push
+        stages: [push]      # Only on push
 
 # Configuration
 ci:
