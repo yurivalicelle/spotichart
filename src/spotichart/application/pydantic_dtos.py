@@ -8,7 +8,7 @@ and better error messages. This provides type safety beyond static analysis.
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from ..core.models import Track
 
@@ -101,13 +101,12 @@ class CreatePlaylistRequestV2(BaseModel):
             raise ValueError(f"update_mode must be one of {allowed}, got '{v}'")
         return v
 
-    class Config:
-        """Pydantic configuration."""
-
-        frozen = True  # Immutable
-        str_strip_whitespace = True  # Auto-strip strings
-        validate_assignment = True  # Validate on attribute assignment
-        extra = "forbid"  # Reject extra fields
+    model_config = ConfigDict(
+        frozen=True,  # Immutable
+        str_strip_whitespace=True,  # Auto-strip strings
+        validate_assignment=True,  # Validate on attribute assignment
+        extra="forbid",  # Reject extra fields
+    )
 
 
 class ChartPreviewRequestV2(BaseModel):
@@ -136,11 +135,10 @@ class ChartPreviewRequestV2(BaseModel):
             raise ValueError("Region cannot be empty")
         return v.strip().lower()
 
-    class Config:
-        """Pydantic configuration."""
-
-        frozen = True
-        str_strip_whitespace = True
+    model_config = ConfigDict(
+        frozen=True,
+        str_strip_whitespace=True,
+    )
 
 
 # ============================================================================
@@ -185,11 +183,10 @@ class CreatePlaylistResponseV2(BaseModel):
             raise ValueError("If tracks_failed > 0, errors list should not be empty")
         return self
 
-    class Config:
-        """Pydantic configuration."""
-
-        frozen = True
-        validate_assignment = True
+    model_config = ConfigDict(
+        frozen=True,
+        validate_assignment=True,
+    )
 
 
 class PlaylistStatisticsV2(BaseModel):
@@ -216,10 +213,9 @@ class PlaylistStatisticsV2(BaseModel):
             raise ValueError("average_duration_ms should be > 0 when total_tracks > 0")
         return self
 
-    class Config:
-        """Pydantic configuration."""
-
-        frozen = True
+    model_config = ConfigDict(
+        frozen=True,
+    )
 
 
 class TrackV2(BaseModel):
@@ -250,11 +246,10 @@ class TrackV2(BaseModel):
             return f"{self.artist} - {self.name}"
         return self.id
 
-    class Config:
-        """Pydantic configuration."""
-
-        frozen = True
-        str_strip_whitespace = True
+    model_config = ConfigDict(
+        frozen=True,
+        str_strip_whitespace=True,
+    )
 
 
 # ============================================================================
@@ -279,11 +274,10 @@ class SearchPlaylistsRequestV2(BaseModel):
             raise ValueError("Search term cannot be empty")
         return v.strip().lower()
 
-    class Config:
-        """Pydantic configuration."""
-
-        frozen = True
-        str_strip_whitespace = True
+    model_config = ConfigDict(
+        frozen=True,
+        str_strip_whitespace=True,
+    )
 
 
 # ============================================================================
@@ -312,10 +306,9 @@ class SpotifyCredentialsV2(BaseModel):
             raise ValueError("Please provide valid Spotify credentials")
         return v
 
-    class Config:
-        """Pydantic configuration."""
-
-        frozen = True
+    model_config = ConfigDict(
+        frozen=True,
+    )
 
 
 class ApplicationConfigV2(BaseModel):
@@ -337,11 +330,10 @@ class ApplicationConfigV2(BaseModel):
 
     enable_caching: bool = Field(default=True, description="Enable caching")
 
-    class Config:
-        """Pydantic configuration."""
-
-        frozen = True
-        validate_assignment = True
+    model_config = ConfigDict(
+        frozen=True,
+        validate_assignment=True,
+    )
 
 
 # ============================================================================
