@@ -3,17 +3,20 @@ name: Create PR from Feature Branch
 on:
   push:
     branches:
-    - feature/**
+      - 'feature/**'
 
 jobs:
   create-pull-request:
     runs-on: ubuntu-latest
     steps:
-    - name: Create Pull Request
-      uses: repo-sync/pull-request@v2
-      with:
-        source_branch: ''
-        destination_branch: develop
-        pr_title: PR from ${{ github.ref_name }}
-        pr_body: Automated PR from feature branch.
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create Pull Request
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: "" # Defaults to the branch that triggered the workflow
+          destination_branch: "develop"
+          pr_title: "PR from ${{ github.ref_name }}"
+          pr_body: "Automated PR from feature branch."
+          github_token: ${{ secrets.GITHUB_TOKEN }}
