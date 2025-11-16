@@ -1,0 +1,53 @@
+name: Create Release Tag and GitHub Release
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  create-release:
+    # This job only runs when a PR from a 'release/*' branch is merged into 'main'.
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to create tags and releases
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Extract version from branch name
+        id: get_version
+        run: |
+          # Extracts 'vX.Y.Z' from 'release/vX.Y.Z'
+          VERSION_TAG=${{ github.event.pull_request.head.ref }}
+          VERSION_TAG=${VERSION_TAG#release/}
+          echo "VERSION_TAG=$VERSION_TAG" >> $GITHUB_OUTPUT
+
+      - name: Create Git Tag
+        run: |
+          git tag ${{ steps.get_version.outputs.VERSION_TAG }}
+          git push origin ${{ steps.get_version.outputs.VERSION_TAG }}
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION_TAG }}
+          release_name: Release ${{ steps.get_version.outputs.VERSION_TAG }}
+          body: |
+            Automated release for version ${{ steps.get_version.outputs.VERSION_TAG }}.
+            Merged from PR #${{ github.event.pull_request.number }}.
+          draft: false
+          prerelease: false
