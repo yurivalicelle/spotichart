@@ -1,12 +1,13 @@
 name: Docker Build
 
 on:
-  push:
-    branches: [ main ]
-    tags:
-      - 'v*'
+  # Run on pull requests to 'main' to verify the build, but don't push.
   pull_request:
     branches: [ main ]
+  # Run and publish when a new version tag is pushed.
+  push:
+    tags:
+      - 'v*'
 
 env:
   REGISTRY: ghcr.io
