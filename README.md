@@ -8,6 +8,8 @@
 ![Tests](https://img.shields.io/badge/tests-654%20passed-success)
 ![Coverage](https://img.shields.io/badge/coverage-95.52%25-brightgreen)
 ![Quality](https://img.shields.io/badge/quality-ELITE%20Package-gold)
+![GitHub Package](https://img.shields.io/badge/GitHub-Packages-blue?logo=github)
+![Private Package](https://img.shields.io/badge/Access-Private-red)
 
 </div>
 
@@ -57,25 +59,42 @@ A professional, enterprise-grade Python application that automatically creates S
 
 ### Installation
 
-#### Option 1: pip install (recommended)
+#### Option 1: GitHub Packages (Recommended for Production)
+
+This package is hosted as a **private package** on GitHub Packages. You'll need a GitHub Personal Access Token with `read:packages` permission.
+
+**Quick Install:**
+
+```bash
+# Set your GitHub token as environment variable
+export GITHUB_TOKEN="your_github_token_here"
+
+# Install from GitHub Packages
+pip install spotichart \
+  --index-url https://oauth2:${GITHUB_TOKEN}@pypi.pkg.github.com/yurivalicelle/spotichart/simple/
+```
+
+For detailed installation instructions, authentication methods, and troubleshooting, see **[GITHUB_PACKAGES.md](GITHUB_PACKAGES.md)**.
+
+#### Option 2: Development Install (For Contributors)
 
 ```bash
 # Clone the repository
-git clone https://github.com/github_username/spotichart.git
+git clone https://github.com/yurivalicelle/spotichart.git
 cd spotichart
 
 # Create virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Install the package
+# Install the package in editable mode
 pip install -e .
 
 # Or install with development dependencies
 pip install -e ".[dev]"
 ```
 
-#### Option 2: Docker
+#### Option 3: Docker
 
 ```bash
 # Build the image
@@ -412,6 +431,13 @@ docker-compose build --no-cache
 ## Documentation
 
 For detailed information about the ELITE Package and architecture:
+
+- **[GITHUB_PACKAGES.md](GITHUB_PACKAGES.md)** - Complete GitHub Packages installation guide
+  - Authentication methods
+  - Installation options (pip, Poetry, Docker)
+  - CI/CD integration
+  - Troubleshooting
+  - Publishing workflow
 
 - **[ELITE_PACKAGE.md](ELITE_PACKAGE.md)** - Complete ELITE Package documentation
   - Property-Based Testing guide

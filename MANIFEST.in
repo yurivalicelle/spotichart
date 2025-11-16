@@ -1,0 +1,40 @@
+# Include documentation files
+include README.md
+include LICENSE
+include CHANGELOG.md
+include CONTRIBUTING.md
+include ELITE_PACKAGE.md
+
+# Include configuration files
+include pyproject.toml
+include .env.example
+
+# Include Docker files
+include Dockerfile
+include docker-compose.yml
+include .dockerignore
+
+# Include documentation directory
+recursive-include docs *.md *.rst *.txt
+
+# Exclude unnecessary files
+global-exclude __pycache__
+global-exclude *.py[cod]
+global-exclude *$py.class
+global-exclude *.so
+global-exclude .DS_Store
+global-exclude *.egg-info
+
+# Exclude development and testing files
+exclude .gitignore
+exclude .pre-commit-config.yaml
+exclude Makefile
+recursive-exclude tests *
+recursive-exclude .github *
+recursive-exclude htmlcov *
+recursive-exclude .pytest_cache *
+recursive-exclude .mypy_cache *
+
+# Exclude logs and cache
+recursive-exclude logs *
+exclude .cache

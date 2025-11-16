@@ -1,0 +1,58 @@
+name: Package Info
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run weekly on Mondays at 9 AM
+    - cron: '0 9 * * 1'
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  package-info:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract package info
+        id: package_info
+        run: |
+          VERSION=$(grep -m 1 '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+          NAME=$(grep -m 1 '^name = ' pyproject.toml | sed 's/name = "\(.*\)"/\1/')
+          DESCRIPTION=$(grep -m 1 '^description = ' pyproject.toml | sed 's/description = "\(.*\)"/\1/')
+
+          echo "name=$NAME" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "description=$DESCRIPTION" >> $GITHUB_OUTPUT
+
+      - name: Display package information
+        run: |
+          echo "## 📦 Package Information" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Name:** ${{ steps.package_info.outputs.name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** ${{ steps.package_info.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Description:** ${{ steps.package_info.outputs.description }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Installation" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "pip install ${{ steps.package_info.outputs.name }} \\" >> $GITHUB_STEP_SUMMARY
+          echo "  --index-url https://oauth2:\${GITHUB_TOKEN}@pypi.pkg.github.com/yurivalicelle/spotichart/simple/" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Links" >> $GITHUB_STEP_SUMMARY
+          echo "- [Repository](https://github.com/yurivalicelle/spotichart)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Packages](https://github.com/yurivalicelle/spotichart/packages)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Documentation](https://github.com/yurivalicelle/spotichart#readme)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Check latest release
+        run: |
+          LATEST_RELEASE=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
+          echo "### 🏷️ Latest Release" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tag:** $LATEST_RELEASE" >> $GITHUB_STEP_SUMMARY
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
