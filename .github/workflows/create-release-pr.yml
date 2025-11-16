@@ -53,6 +53,6 @@ jobs:
         with:
           source_branch: "release/${{ steps.version.outputs.next_version }}"
           destination_branch: "main"
-          pr_title: "Release ${{ steps.version.outputs.next_version }}"
+          pr_title: "chore(release): PR from release/${{ steps.version.outputs.next_version }} to main"
           pr_body: "Automated release PR for version ${{ steps.version.outputs.next_version }}."
           github_token: ${{ secrets.GITHUB_TOKEN }}
